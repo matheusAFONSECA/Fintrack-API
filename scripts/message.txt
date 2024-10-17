@@ -1,3 +1,9 @@
-docs(project): Update docs 
+feat(api): implement login and register routes
 
-update docs.
+Implemented user registration and login
+with JWT authentication, including password
+hashing and API key validation. Fixed
+import issues, improved error handling,
+and ensured proper user handling and
+security. Updated routes and validated
+endpoints via Postman.

@@ -1,1 +1,1 @@
-from sql_connection import connect
+from fintrack_api.services.db.sql_connection import connect

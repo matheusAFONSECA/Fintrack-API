@@ -2,15 +2,16 @@ import os
 import jwt
 from dotenv import load_dotenv
 from typing import Annotated, Union
-from models.userModels import UserInDB
+from fintrack_api.models.userModels import UserInDB
 from passlib.context import CryptContext
-from jwt.exceptions import InvalidTokenError
+from jwt import InvalidTokenError
+# from jwt.exceptions import InvalidTokenError
 from starlette.status import HTTP_403_FORBIDDEN
-from services.user import get_user_by_email_for_auth
+from fintrack_api.services.user import get_user_by_email_for_auth
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
-from models.structural.TokenModels import TokenData
+from fintrack_api.models.structural.TokenModels import TokenData
 
 # Carrega variáveis de ambiente
 load_dotenv()

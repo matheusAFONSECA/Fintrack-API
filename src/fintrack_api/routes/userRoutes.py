@@ -2,15 +2,15 @@ from datetime import timedelta
 from typing import Annotated, Optional, List, Dict
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from dependencies import (
+from fintrack_api.dependencies import (
     authenticate_user,
     create_access_token,
     get_api_key,
     get_password_hash,
 )
 from services.user import create_user, get_all_users
-from models.userModels import UserInDB, UserOut, UserIn
-from models.structural.TokenModels import Token
+from fintrack_api.models.userModels import UserInDB, UserOut, UserIn
+from fintrack_api.models.structural.TokenModels import Token
 
 # Definição do roteador com prefixo e dependências
 router = APIRouter(prefix="/user", tags=["User"], dependencies=[Depends(get_api_key)])

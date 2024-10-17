@@ -1,9 +1,8 @@
 import re
 from fastapi import HTTPException
 from psycopg2 import IntegrityError
-
-from services.db import connect
-from models.userModels import UserIn
+from fintrack_api.services.db import connect
+from fintrack_api.models.userModels import UserIn
 
 
 async def create_user(user: UserIn) -> None:

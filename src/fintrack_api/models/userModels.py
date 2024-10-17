@@ -4,37 +4,31 @@ from pydantic import BaseModel, Field
 
 class UserOut(BaseModel):
     """
-    Modelo para representar a saída de dados de um usuário.
+    Modelo de saída para exibir os dados de um usuário.
 
     Attributes:
-        name (str): Nome do usuário (máximo de 150 caracteres).
-        email (str): Email do usuário (máximo de 100 caracteres).
-        phone (str): Telefone do usuário (máximo de 15 caracteres).
-        birth (str): Data de nascimento do usuário no formato 'DD/MM/AAAA'.
+        name (str): Nome do usuário.
+        email (str): Email do usuário.
     """
 
     name: str = Field(max_length=150)
     email: str = Field(max_length=100)
-    phone: str = Field(max_length=15)
-    birth: str = Field(max_length=10)
 
 
 class UserIn(UserOut):
     """
-    Modelo para representar os dados de entrada ao criar um novo usuário.
+    Modelo para representar os dados de entrada ao registrar um usuário.
 
     Attributes:
-        cpf (str): CPF do usuário (máximo de 14 caracteres).
-        password (str): Senha do usuário (máximo de 64 caracteres).
+        password (str): Senha do usuário.
     """
 
-    cpf: str = Field(max_length=14)
     password: str = Field(max_length=64)
 
 
 class UserInDB(BaseModel):
     """
-    Modelo para representar o usuário armazenado no banco de dados.
+    Modelo para representar um usuário armazenado no banco de dados.
 
     Attributes:
         hashed_password (str): Hash da senha do usuário.
