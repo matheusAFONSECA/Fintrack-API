@@ -1,3 +1,4 @@
-feat(project): Update Requirements
+feat(project): Adding folder for documentation
 
-Update Requirements
+Folder dedicated for documentation
+of code.
