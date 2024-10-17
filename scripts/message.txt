@@ -1,3 +1,4 @@
-feat(project): updating scripts
+feat(project): Adding folder
 
-Update scripts
+Folder with codes
+defined as src.
