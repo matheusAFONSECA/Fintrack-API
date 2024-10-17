@@ -1,3 +1,5 @@
-feat(project): Update Requirements
+docs(project): adding documentation
 
-Update Requirements
+Adding detailed documentation
+throughout the code in PEP8
+format. 
