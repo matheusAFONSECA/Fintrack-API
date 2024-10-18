@@ -1,3 +1,5 @@
-feat(api): implementing the register function
+feat(tests): implementing initial tests
 
-The register function is now functional.
+Implementing initial tests
+of API to register a 
+person.
