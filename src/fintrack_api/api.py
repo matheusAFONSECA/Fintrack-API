@@ -14,10 +14,6 @@ from fintrack_api.models.structural.TokenModels import Token
 
 
 class API:
-    """
-    Classe API que encapsula todas as rotas e funcionalidades da aplicação.
-    """
-
     def __init__(self):
         """
         Inicializa o roteador com prefixo e dependências.
@@ -25,7 +21,6 @@ class API:
         self.router = APIRouter(
             prefix="/user",
             tags=["User"],
-            dependencies=[Depends(get_api_key)],
         )
         self.setup_routes()
 
@@ -33,6 +28,7 @@ class API:
         """
         Define as rotas da API.
         """
+        # A rota de login e registro não deve ter dependência de autenticação
         self.router.post("/login", response_model=Token)(self.login_for_access_token)
         self.router.post("/register", response_model=Dict)(self.register_new_user)
 
@@ -67,20 +63,22 @@ class API:
         )
         return Token(access_token=access_token, token_type="bearer")
 
+    # Função para verificar a força da senha
+    def validate_password_strength(self, password: str):
+        if len(password) < 6:
+            raise HTTPException(
+                status_code=400,  # Retorna 400 para erro de validação
+                detail="A senha deve ter no mínimo 6 caracteres."
+            )
+
     async def register_new_user(self, user: UserIn) -> Dict:
         """
         Registra um novo usuário no sistema.
-
-        Args:
-            user (UserIn): Dados do novo usuário.
-
-        Returns:
-            Dict: Mensagem indicando sucesso no registro.
-
-        Raises:
-            HTTPException: Se ocorrer um erro durante o registro.
         """
         try:
+            # Validação da força da senha antes de qualquer operação
+            self.validate_password_strength(user.password)
+
             # Gerar o hash da senha corretamente a partir do objeto user
             hashed_password = get_password_hash(user.password)
             
@@ -91,7 +89,11 @@ class API:
             await create_user(user)
 
             return {"message": f"Usuário {user.name} registrado com sucesso!"}
+        
+        except HTTPException as http_exc:
+            raise http_exc  # Relevanta o HTTPException existente
         except Exception as e:
+            # Lança um erro 400 para problemas genéricos no registro
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Erro ao registrar usuário: {str(e)}"
