@@ -1,5 +1,5 @@
-feat(tests): implementing initial tests
+feat(tests): implementing tests
 
-Implementing initial tests
+Implementing tests
 of API to register a 
 person.
