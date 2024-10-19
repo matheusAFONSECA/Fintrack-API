@@ -1,5 +1,4 @@
-feat(tests): implementing tests
+feat(tests): Generanting report
 
-Implementing tests
-of API to register a 
-person.
+Implementing a report
+to show the tests.
