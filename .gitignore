@@ -1,3 +1,5 @@
 .venv
 .env
 venv/
+C214venv/
+__pycache__/

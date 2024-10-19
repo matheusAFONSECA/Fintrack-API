@@ -1,8 +1,7 @@
 from fastapi import HTTPException
 from psycopg2 import IntegrityError
-
-from services.db import connect
-from models.userModels import UserInQuery
+from fintrack_api.services.db import connect
+from fintrack_api.models.userModels import UserInQuery
 
 async def update_team_by_number(cpf: str, update_data: UserInQuery) -> None:
     try:

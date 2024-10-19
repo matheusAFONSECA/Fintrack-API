@@ -1,6 +1,5 @@
 from fastapi import HTTPException
-
-from services.db import connect
+from fintrack_api.services.db import connect
 
 
 async def delete(cpf: str):

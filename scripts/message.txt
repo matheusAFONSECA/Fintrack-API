@@ -1,3 +1,4 @@
-feat(project): updating scripts
+feat(tests): Generanting report
 
-Update scripts
+Implementing a report
+to show the tests.
