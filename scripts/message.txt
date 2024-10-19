@@ -1,4 +1,5 @@
-feat(tests): Generanting report
+feat(tests): All tests running properly
 
-Implementing a report
-to show the tests.
+Now the tests run properly
+and the API can handle with
+those kinds of requests.

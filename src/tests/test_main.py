@@ -1,18 +1,112 @@
 import requests
+import uuid
+from tests.utils.test_utils import BASE_URL, register_user, generate_random_email
 
-# URL base da API
-BASE_URL = "http://localhost:8000"
+# Testes com o endpoint de registro de usuário
 
-# Função auxiliar para registro de usuário
-def register_user(data):
-    return requests.post(f"{BASE_URL}/user/register", json=data)
+# Teste de erro - e-mail inválido
+def test_register_invalid_email_format():
+    data = {
+        "name": "Matheus Fonseca",
+        "email": "matheusfonsecaafonso",  # E-mail sem o domínio
+        "password": "senha123",
+    }
+    response = register_user(data)
+    assert (
+        response.status_code == 400
+    )  # Verifica se o status é 400 para erro de validação
+    json_response = response.json()
+    assert "detail" in json_response  # Verifica o campo "detail"
+    assert (
+        "O e-mail deve estar no formato" in json_response["detail"]
+    )  # Verifica a mensagem correta
+
+
+# Teste para e-mail sem domínio
+def test_register_email_without_domain():
+    data = {
+        "name": "Matheus Fonseca",
+        "email": "matheus@fonseca",  # E-mail sem domínio válido
+        "password": "senha123",
+    }
+    response = register_user(data)
+    assert (
+        response.status_code == 400
+    )  # Verifica se o status é 400 para erro de validação
+    json_response = response.json()
+    assert "detail" in json_response  # Verifica o campo "detail"
+    assert (
+        "O e-mail deve estar no formato" in json_response["detail"]
+    )  # Verifica a mensagem correta
+
+
+# Teste para e-mail com domínio inválido
+def test_register_email_invalid_domain():
+    data = {
+        "name": "Matheus Fonseca",
+        "email": "matheus@domain.fake",  # Domínio não reconhecido
+        "password": "senha123",
+    }
+    response = register_user(data)
+    assert (
+        response.status_code == 400
+    )  # Verifica se o status é 400 para erro de validação
+    json_response = response.json()
+    assert "detail" in json_response  # Verifica o campo "detail"
+    assert (
+        "O e-mail deve estar no formato" in json_response["detail"]
+    )  # Verifica a mensagem correta
+
+
+# Teste de erro - e-mail duplicado
+def test_register_duplicate_email():
+    # Gerar um e-mail aleatório para evitar conflito
+    random_email = generate_random_email()
+
+    # Primeiro registro com um e-mail que será duplicado
+    data = {
+        "name": "Matheus Fonseca",
+        "email": random_email,
+        "password": "senha123",
+    }
+    response = register_user(data)
+    assert response.status_code == 200  # Verifica se o primeiro registro é bem-sucedido
+
+    # Tentativa de registro com o mesmo e-mail
+    response = register_user(data)
+    assert (
+        response.status_code == 400
+    )  # Ajustado para 400 se a API retornar isso em vez de 409
+    json_response = response.json()
+    assert "detail" in json_response
+    assert (
+        "User with email" in json_response["detail"]
+    )  # Verifica parte da mensagem retornada
+
+
+# Teste de sucesso - registro válido
+def test_register_success():
+    # Geração de nome e email aleatórios para garantir que o registro seja único
+    unique_id = str(uuid.uuid4())[:8]  # Gera um identificador único curto
+    data = {
+        "name": f"Matheus Fonseca {unique_id}",
+        "email": f"test_user_{unique_id}@gmail.com",
+        "password": "senha123",
+    }
+    response = register_user(data)
+    assert (
+        response.status_code == 200
+    ), f"Expected status 200, got {response.status_code}"
+    json_response = response.json()
+    assert "message" in json_response, "Key 'message' not found in response"
+    assert (
+        "sucesso" in json_response["message"]
+    ), f"Expected 'sucesso' in message, got {json_response['message']}"
+
 
 # Teste de erro - dados faltando (sem nome)
 def test_register_missing_name():
-    data = {
-        "email": "matheusfonsecaafonso@gmail.com",
-        "password": "senha123"
-    }
+    data = {"email": "matheusfonsecaafonso@gmail.com", "password": "senha123"}
     response = register_user(data)
     assert response.status_code == 422  # Status code esperado para dados faltando
     json_response = response.json()
@@ -20,18 +114,22 @@ def test_register_missing_name():
     assert json_response["detail"][0]["msg"] == "Field required"
     assert json_response["detail"][0]["loc"] == ["body", "name"]
 
+
 # Teste de erro - senha fraca
 def test_register_weak_password():
     data = {
         "name": "Matheus Fonseca",
         "email": "matheusfonsecaafonso@gmail.com",
-        "password": "123"  # Senha muito curta
+        "password": "123",  # Senha muito curta
     }
     response = register_user(data)
-    assert response.status_code == 400, f"Expected status 400, got {response.status_code}"
+    assert (
+        response.status_code == 400
+    ), f"Expected status 400, got {response.status_code}"
     json_response = response.json()
     assert "detail" in json_response  # Verifica o campo "detail"
     assert "A senha deve ter no mínimo 6 caracteres" in json_response["detail"]
+
 
 # Teste de erro - método HTTP incorreto
 def test_register_wrong_method():

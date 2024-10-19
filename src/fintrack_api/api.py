@@ -11,7 +11,7 @@ from fintrack_api.dependencies import (
 from fintrack_api.services.user import create_user
 from fintrack_api.models.userModels import UserInDB, UserIn
 from fintrack_api.models.structural.TokenModels import Token
-
+from fintrack_api.utils.frintrack_api_utils import validate_password_strength, validate_email_format
 
 class API:
     def __init__(self):
@@ -63,21 +63,16 @@ class API:
         )
         return Token(access_token=access_token, token_type="bearer")
 
-    # Função para verificar a força da senha
-    def validate_password_strength(self, password: str):
-        if len(password) < 6:
-            raise HTTPException(
-                status_code=400,  # Retorna 400 para erro de validação
-                detail="A senha deve ter no mínimo 6 caracteres."
-            )
-
     async def register_new_user(self, user: UserIn) -> Dict:
         """
         Registra um novo usuário no sistema.
         """
         try:
+            # Validação do formato do e-mail
+            validate_email_format(user.email)
+
             # Validação da força da senha antes de qualquer operação
-            self.validate_password_strength(user.password)
+            validate_password_strength(user.password)
 
             # Gerar o hash da senha corretamente a partir do objeto user
             hashed_password = get_password_hash(user.password)
@@ -92,6 +87,12 @@ class API:
         
         except HTTPException as http_exc:
             raise http_exc  # Relevanta o HTTPException existente
+        except ValueError as val_exc:
+            # Lança um erro 400 para problemas de validação do e-mail
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(val_exc)
+            )
         except Exception as e:
             # Lança um erro 400 para problemas genéricos no registro
             raise HTTPException(
