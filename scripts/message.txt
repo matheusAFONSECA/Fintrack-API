@@ -1,5 +1,6 @@
-feat(tests): All tests running properly
+feat(tests): Updating ReadMe
 
-Now the tests run properly
-and the API can handle with
-those kinds of requests.
+The ReadMe has been
+updated and now explains
+how to run the API and 
+tests.
