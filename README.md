@@ -27,7 +27,6 @@ The project is structured as follows:
 ```mermaid
 graph TD;
     subgraph Fintrack-API
-        A[/Fintrack-API/]
         
         subgraph assets
             B1[style.css]
@@ -82,9 +81,9 @@ graph TD;
         
         subgraph tests
             subgraph utils_tests
-                F1a[test_main.py]
+                F1a[test_utils.py]
             end
-            F2[main.py]
+            F2[test_main.py]
         end
 
         G[requirements.txt]
