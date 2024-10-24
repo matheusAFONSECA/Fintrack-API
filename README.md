@@ -161,6 +161,8 @@ pytest src/tests/test_main.py
 
 > **Remember:** Make sure that the API is running before using the tests.
 
+---
+
 ## Contributors
 
 ### [Álvaro Ribeiro](https://github.com/AlvaroLucioRibeiro)
