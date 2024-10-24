@@ -1,6 +1,5 @@
-feat(tests): Updating ReadMe
+feat(tests): Updating gitignore
 
-The ReadMe has been
-updated and now explains
-how to run the API and 
-tests.
+gitignore was updated
+because a folder unecessary
+was been tracked.
