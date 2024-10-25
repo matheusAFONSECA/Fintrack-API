@@ -131,9 +131,33 @@ def test_register_weak_password():
     assert "A senha deve ter no mínimo 6 caracteres" in json_response["detail"]
 
 
-# Teste de erro - método HTTP incorreto
-def test_register_wrong_method():
+# Teste de erro - método HTTP incorreto (GET)
+def test_register_wrong_method_get():
     response = requests.get(f"{BASE_URL}/user/register")
+    assert response.status_code == 405
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+# Teste de erro - método HTTP incorreto (PUT)
+def test_register_wrong_method_put():
+    response = requests.put(f"{BASE_URL}/user/register")
+    assert response.status_code == 405
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+# Teste de erro - método HTTP incorreto (PATCH)
+def test_register_wrong_method_patch():
+    response = requests.patch(f"{BASE_URL}/user/register")
+    assert response.status_code == 405
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+# Teste de erro - método HTTP incorreto (DELETE)
+def test_register_wrong_method_delete():
+    response = requests.delete(f"{BASE_URL}/user/register")
     assert response.status_code == 405
     json_response = response.json()
     assert "detail" in json_response

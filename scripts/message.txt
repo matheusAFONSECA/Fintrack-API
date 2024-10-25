@@ -1,6 +1,5 @@
-feat(tests): Updating ReadMe
+feat(tests): testing methods allowed
 
-The ReadMe has been
-updated and now explains
-how to run the API and 
-tests.
+Tests using others methods
+to see if the route would
+not allowed it.
