@@ -42,27 +42,20 @@ async def get_all_users() -> Optional[List[UserOut]]:
 
 async def get_user_by_email_for_auth(email: str) -> UserInDB:
     query = """
-            SELECT u.password, u.user_id
-            FROM "user" u
-            WHERE u.email = %(email)s;
-            """
+        SELECT u.password, u.email
+        FROM "user" u
+        WHERE u.email = %(email)s;
+    """
     try:
         with connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(query, {"email": email})
                 result = cursor.fetchone()
+                print(f"Query Result: {result}")  # Debug
 
                 if result:
-                    user: UserInDB
-                    user = UserInDB(hashed_password=result[0], user_id=result[1])
-
-                    return user
-                else:
-                    return None
-
+                    return UserInDB(hashed_password=result[0], user_id=result[1])
+                return None
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    finally:
-        cursor.close()
-        conn.close()

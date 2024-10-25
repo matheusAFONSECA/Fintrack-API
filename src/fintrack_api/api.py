@@ -5,13 +5,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fintrack_api.dependencies import (
     authenticate_user,
     create_access_token,
-    get_api_key,
-    get_password_hash,
 )
 from fintrack_api.services.user import create_user
 from fintrack_api.models.userModels import UserInDB, UserIn
 from fintrack_api.models.structural.TokenModels import Token
-from fintrack_api.utils.frintrack_api_utils import validate_password_strength, validate_email_format
+from fintrack_api.utils.frintrack_api_utils import validate_password_strength, validate_email_format, get_password_hash
 
 class API:
     def __init__(self):
@@ -70,12 +68,14 @@ class API:
         try:
             # Validação do formato do e-mail
             validate_email_format(user.email)
-
+            
             # Validação da força da senha antes de qualquer operação
             validate_password_strength(user.password)
-
+            
             # Gerar o hash da senha corretamente a partir do objeto user
             hashed_password = get_password_hash(user.password)
+            
+            print(f"Hashed password: {hashed_password}")
             
             # Substituir a senha em texto pelo hash
             user.password = hashed_password

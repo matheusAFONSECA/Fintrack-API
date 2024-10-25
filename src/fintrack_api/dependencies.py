@@ -1,23 +1,27 @@
 import os
 import jwt
 from dotenv import load_dotenv
-from typing import Annotated, Union
+from typing import Annotated, Optional, Union
 from fintrack_api.models.userModels import UserInDB
 from passlib.context import CryptContext
-from jwt import InvalidTokenError
-# from jwt.exceptions import InvalidTokenError
-from starlette.status import HTTP_403_FORBIDDEN
+from jwt.exceptions import InvalidTokenError
 from fintrack_api.services.user import get_user_by_email_for_auth
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
 from fintrack_api.models.structural.TokenModels import TokenData
+from passlib.context import CryptContext  # noqa: F811
+from fintrack_api.utils.frintrack_api_utils import verify_password
+
+
+# Inicialize o contexto de criptografia (caso ainda não tenha)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Carrega variáveis de ambiente
 load_dotenv()
 
-# Configuração de cabeçalho de autenticação por API key
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
 
 # Variáveis secretas para JWT
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -31,72 +35,30 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 async def get_api_key(X_API_Key: str = Security(api_key_header)) -> str:
-    """
-    Valida a API key fornecida no cabeçalho da solicitação.
-
-    Args:
-        X_API_Key (str): A API key recebida do cabeçalho.
-
-    Returns:
-        str: A API key válida.
-
-    Raises:
-        HTTPException: Se a API key for inválida ou não fornecida.
-    """
     if X_API_Key == os.getenv("API_KEY"):
         return X_API_Key
-    raise HTTPException(
-        status_code=HTTP_403_FORBIDDEN, 
-        detail="Could not validate API KEY"
-    )
+    raise HTTPException(status_code=403, detail="Could not validate API KEY")
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    Verifica se a senha fornecida corresponde ao hash armazenado.
+async def authenticate_user(email: str, password: str) -> Optional[UserInDB]:
+    user = await get_user_by_email_for_auth(email)
+    print(f"User from DB: {user}")  # Log para debug
 
-    Args:
-        plain_password (str): A senha em texto plano.
-        hashed_password (str): O hash da senha armazenado.
+    if not user:
+        print("User not found.")
+        return None
 
-    Returns:
-        bool: True se a senha for válida, caso contrário, False.
-    """
-    return pwd_context.verify(plain_password, hashed_password)
+    if not verify_password(password, user.hashed_password):  # Verificação correta
+        print("Password mismatch.")
+        return None
 
-
-def get_password_hash(password: str) -> str:
-    """
-    Gera um hash para uma senha.
-
-    Args:
-        password (str): A senha em texto plano.
-
-    Returns:
-        str: O hash da senha.
-    """
-    return pwd_context.hash(password)
-
-
-async def authenticate_user(email: str, password: str) -> Union[UserInDB, bool]:
-    """
-    Autentica o usuário com base no email e senha fornecidos.
-
-    Args:
-        email (str): O email do usuário.
-        password (str): A senha em texto plano do usuário.
-
-    Returns:
-        Union[UserInDB, bool]: O objeto UserInDB se a autenticação for bem-sucedida, 
-        caso contrário, False.
-    """
-    user: UserInDB = await get_user_by_email_for_auth(email)
-    if not user or not verify_password(password, user.hashed_password):
-        return False
+    print("User authenticated successfully.")
     return user
 
 
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
+def create_access_token(
+    data: dict, expires_delta: Union[timedelta, None] = None
+) -> str:
     """
     Cria um token de acesso JWT.
 
