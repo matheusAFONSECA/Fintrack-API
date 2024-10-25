@@ -42,9 +42,9 @@ async def get_all_users() -> Optional[List[UserOut]]:
 
 async def get_user_by_email_for_auth(email: str) -> UserInDB:
     query = """
-        SELECT u.password, u.email
-        FROM "user" u
-        WHERE u.email = %(email)s;
+        SELECT password, email 
+        FROM "user" 
+        WHERE email = %(email)s;
     """
     try:
         with connect() as conn:

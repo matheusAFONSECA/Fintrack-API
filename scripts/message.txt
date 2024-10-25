@@ -1,5 +1,5 @@
-feat(tests): testing methods allowed
+feat(api): updating query
 
-Tests using others methods
-to see if the route would
-not allowed it.
+The query dedicated
+to get the info from 
+database is correct now.
