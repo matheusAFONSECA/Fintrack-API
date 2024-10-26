@@ -1,73 +1,39 @@
 import os
 import jwt
 from dotenv import load_dotenv
-from typing import Annotated, Optional, Union
-from fintrack_api.models.userModels import UserInDB
-from passlib.context import CryptContext
 from jwt.exceptions import InvalidTokenError
-from fintrack_api.services.user import get_user_by_email_for_auth
+from typing import Annotated, Optional, Union
 from datetime import datetime, timedelta, timezone
+from fintrack_api.models.userModels import UserInDB
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
+from fintrack_api.services.user import get_user_by_email_for_auth
 from fintrack_api.models.structural.TokenModels import TokenData
-from passlib.context import CryptContext  # noqa: F811
-from fintrack_api.utils.frintrack_api_utils import verify_password
 
-
-# Inicialize o contexto de criptografia (caso ainda não tenha)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# Carrega variáveis de ambiente
+# Load environment variables
 load_dotenv()
 
+# Initialize authentication schemes
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
-
-
-# Variáveis secretas para JWT
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-
-# Contexto de criptografia para senhas
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# Esquema de autenticação OAuth2
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-
-async def get_api_key(X_API_Key: str = Security(api_key_header)) -> str:
-    if X_API_Key == os.getenv("API_KEY"):
-        return X_API_Key
-    raise HTTPException(status_code=403, detail="Could not validate API KEY")
-
-
-async def authenticate_user(email: str, password: str) -> Optional[UserInDB]:
-    user = await get_user_by_email_for_auth(email)
-    print(f"User from DB: {user}")  # Log para debug
-
-    if not user:
-        print("User not found.")
-        return None
-
-    if not verify_password(password, user.hashed_password):  # Verificação correta
-        print("Password mismatch.")
-        return None
-
-    print("User authenticated successfully.")
-    return user
+# Secret and algorithm for JWT
+SECRET_KEY = os.getenv("SECRET_KEY", "default_secret")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 
 def create_access_token(
     data: dict, expires_delta: Union[timedelta, None] = None
 ) -> str:
     """
-    Cria um token de acesso JWT.
+    Create a JWT access token with an optional expiration.
 
     Args:
-        data (dict): Os dados a serem codificados no token.
-        expires_delta (Union[timedelta, None], opcional): A duração do token.
+        data (dict): The data to encode in the token.
+        expires_delta (Union[timedelta, None]): Optional expiration time for the token.
 
     Returns:
-        str: O token JWT codificado.
+        str: The encoded JWT token.
     """
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(days=999))
@@ -76,18 +42,68 @@ def create_access_token(
     return encoded_jwt
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserInDB:
+async def authenticate_user(email: str, password: str) -> Optional[UserInDB]:
     """
-    Obtém o usuário atual com base no token JWT fornecido.
+    Authenticate a user with the provided email and password.
 
     Args:
-        token (str): O token JWT fornecido na solicitação.
+        email (str): The user's email.
+        password (str): The user's password.
 
     Returns:
-        UserInDB: O objeto do usuário autenticado.
+        Optional[UserInDB]: The authenticated user if successful, otherwise None.
+    """
+    print(f"Attempting to authenticate: email={email}, password={password}")  # Debug
+
+    user = await get_user_by_email_for_auth(email)
+    if not user:
+        print("User not found.")  # Debug
+        return None
+
+    print(f"User found: {user}")  # Debug
+
+    if password != user.password:
+        print(
+            f"Incorrect password. Provided: {password}, Expected: {user.password}"
+        )  # Debug
+        return None
+
+    print("User successfully authenticated.")  # Debug
+    return user
+
+
+async def get_api_key(X_API_Key: str = Security(api_key_header)) -> str:
+    """
+    Validate the provided API key.
+
+    Args:
+        X_API_Key (str): The API key provided in the request header.
+
+    Returns:
+        str: The valid API key.
 
     Raises:
-        HTTPException: Se o token for inválido ou se o usuário não existir.
+        HTTPException: If the API key is invalid.
+    """
+    if X_API_Key == os.getenv("API_KEY"):
+        return X_API_Key
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN, detail="Could not validate API KEY"
+    )
+
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserInDB:
+    """
+    Retrieve the current user based on the provided JWT token.
+
+    Args:
+        token (str): The JWT token from the request.
+
+    Returns:
+        UserInDB: The authenticated user.
+
+    Raises:
+        HTTPException: If the token is invalid or user is not found.
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -111,20 +127,22 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> Use
 
 async def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]) -> str:
     """
-    Obtém o ID do usuário atual com base no token JWT fornecido.
+    Retrieve the current user's ID from the provided JWT token.
 
     Args:
-        token (str): O token JWT fornecido na solicitação.
+        token (str): The JWT token from the request.
 
     Returns:
-        str: O ID do usuário.
+        str: The user ID extracted from the token.
 
     Raises:
-        Exception: Se o token for inválido.
+        Exception: If the token is invalid or contains no user ID.
     """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")
+        if user_id is None:
+            raise Exception("Invalid token payload")
         return user_id
     except InvalidTokenError:
         raise Exception("Invalid token")

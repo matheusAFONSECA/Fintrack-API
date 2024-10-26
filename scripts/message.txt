@@ -1,5 +1,12 @@
-feat(tests): testing methods allowed
+fix(project): Login, User Registration, and Database Operations
 
-Tests using others methods
-to see if the route would
-not allowed it.
+This update includes corrections to the login and user
+registration processes, ensuring a proper authentication
+flow with securely hashed passwords. Improvements were
+made to user creation to enhance security. The
+`get_all_users` and `get_user_by_email_for_auth`
+functions were optimized with refined SQL queries
+and better error handling. PEP8-compliant documentation
+was added across all modules, and the main application 
+try point was streamlined for easier deployment with
+Uvicorn.
