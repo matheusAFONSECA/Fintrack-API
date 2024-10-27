@@ -12,4 +12,4 @@ def register_user(data):
 # Função auxiliar para gerar um e-mail aleatório
 def generate_random_email():
     random_str = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-    return f"{random_str}@example.com"
+    return f"{random_str}@gmail.com"

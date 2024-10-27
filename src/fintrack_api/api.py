@@ -4,9 +4,9 @@ from fintrack_api.services.user import create_user
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, Depends, HTTPException, status
 from fintrack_api.dependencies import authenticate_user, create_access_token
+from fintrack_api.utils.frintrack_api_utils import validate_email_format, validate_password_strength
 
 router = APIRouter(prefix="/user", tags=["User"])
-
 
 @router.post("/login")
 async def login_for_access_token(
@@ -60,7 +60,27 @@ async def register_new_user(user: UserIn) -> Dict[str, str]:
         HTTPException: If an error occurs during user creation.
     """
     try:
+        # Validação do formato do e-mail
+        validate_email_format(user.email)
+
+        # Validação da força da senha antes de qualquer operação
+        validate_password_strength(user.password)
+
         await create_user(user)
+
         return {"message": f"User {user.name} registered successfully!"}
+    except HTTPException as http_exc:
+        raise http_exc  # Relevanta o HTTPException existente
+    except ValueError as val_exc:
+        # Lança um erro 400 para problemas de validação do e-mail
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(val_exc)
+        )
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        # Lança um erro 400 para problemas genéricos no registro
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Erro ao registrar usuário: {str(e)}"
+        )
+    

@@ -1,12 +1,8 @@
-fix(project): Login, User Registration, and Database Operations
+tests(project): Project running properly
 
-This update includes corrections to the login and user
-registration processes, ensuring a proper authentication
-flow with securely hashed passwords. Improvements were
-made to user creation to enhance security. The
-`get_all_users` and `get_user_by_email_for_auth`
-functions were optimized with refined SQL queries
-and better error handling. PEP8-compliant documentation
-was added across all modules, and the main application 
-try point was streamlined for easier deployment with
-Uvicorn.
+After running the tests of
+register was necessary to 
+ajust the code bacause some 
+features wasn't opering right.
+Now everything runs and It's
+able to create the tests for login.

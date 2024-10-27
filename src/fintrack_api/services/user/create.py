@@ -28,13 +28,10 @@ async def create_user(user: UserIn) -> None:
         "password": hashed_password,
     }
 
-    print(f"Registering user: {parameters}")  # Debug
-
     try:
         with connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(query, parameters)
             conn.commit()
     except Exception as e:
-        print(f"Error registering user: {e}")  # Debug
         raise HTTPException(status_code=500, detail=str(e))
