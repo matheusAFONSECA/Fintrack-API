@@ -1,8 +1,5 @@
-tests(project): Project running properly
+tests(project): Tets of login done
 
-After running the tests of
-register was necessary to 
-ajust the code bacause some 
-features wasn't opering right.
-Now everything runs and It's
-able to create the tests for login.
+All the tests made to
+test the login route 
+passed.
