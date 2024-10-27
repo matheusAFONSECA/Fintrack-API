@@ -22,7 +22,3 @@ def generate_random_email():
     random_str = "".join(random.choices(string.ascii_lowercase + string.digits, k=10))
     return f"{random_str}@gmail.com"
 
-# Função auxiliar para hash de senha
-def hash_password(password):
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')

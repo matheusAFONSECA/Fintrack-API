@@ -1,5 +1,5 @@
-tests(project): Tets of login done
+tests(project): Formating codes
 
-All the tests made to
-test the login route 
-passed.
+Codes were formated and
+some unecessary functions
+removed.
