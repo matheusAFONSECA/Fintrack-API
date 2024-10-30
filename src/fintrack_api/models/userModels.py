@@ -4,50 +4,52 @@ from pydantic import BaseModel, Field
 
 class UserOut(BaseModel):
     """
-    Modelo de saída para exibir os dados de um usuário.
+    Output model to display user data.
 
     Attributes:
-        name (str): Nome do usuário.
-        email (str): Email do usuário.
+        name (str): The name of the user (up to 150 characters).
+        email (str): The email of the user (up to 100 characters).
     """
 
-    name: str = Field(max_length=150)
-    email: str = Field(max_length=100)
+    name: str = Field(..., max_length=150)
+    email: str = Field(..., max_length=100)
 
 
 class UserIn(UserOut):
     """
-    Modelo para representar os dados de entrada ao registrar um usuário.
+    Input model for registering a new user.
 
     Attributes:
-        password (str): Senha do usuário.
+        password (str): The user's password (up to 64 characters).
     """
 
-    password: str = Field(max_length=64)
+    password: str = Field(..., max_length=64)
 
 
 class UserInDB(BaseModel):
     """
-    Modelo para representar um usuário armazenado no banco de dados.
+    Model representing a user stored in the database.
 
     Attributes:
-        hashed_password (str): Hash da senha do usuário.
-        user_id (str): Identificador único do usuário.
+        name (str): The name of the user.
+        email (str): The email of the user.
+        password (str): The hashed password of the user.
     """
 
-    hashed_password: str
-    user_id: str
+    name: str
+    email: str
+    password: str
 
 
 class UserInQuery(BaseModel):
     """
-    Modelo para representar consultas baseadas em dados opcionais do usuário.
+    Model representing optional query parameters for user searches.
 
     Attributes:
-        name (Optional[str]): Nome do usuário (máximo de 150 caracteres).
-        email (Optional[str]): Email do usuário (máximo de 100 caracteres).
-        phone (Optional[str]): Telefone do usuário (máximo de 15 caracteres).
-        birth (Optional[str]): Data de nascimento do usuário no formato 'DD/MM/AAAA'.
+        name (Optional[str]): The name of the user (up to 150 characters).
+        email (Optional[str]): The email of the user (up to 100 characters).
+        phone (Optional[str]): The phone number of the user (up to 15 characters).
+        birth (Optional[str]): The user's date of birth in the format 'DD/MM/YYYY'.
     """
 
     name: Optional[str] = Field(None, max_length=150)

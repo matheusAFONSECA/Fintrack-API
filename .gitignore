@@ -3,3 +3,4 @@
 venv/
 C214venv/
 __pycache__/
+.pytest_cache/

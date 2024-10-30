@@ -1,4 +1,5 @@
-feat(tests): Generanting report
+tests(project): Formating codes
 
-Implementing a report
-to show the tests.
+Codes were formated and
+some unecessary functions
+removed.
