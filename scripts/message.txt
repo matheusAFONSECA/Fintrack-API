@@ -1,5 +1,5 @@
-tests(project): Formating codes
+feat(project): add POST and GET methods for user, revenue, expenditure, alert, and reminder
 
-Codes were formated and
-some unecessary functions
-removed.
+Added POST methods for user registration, login, and data insertion
+(revenue, expenditure, alert, reminder), along with GET methods for
+retrieving all entries.
