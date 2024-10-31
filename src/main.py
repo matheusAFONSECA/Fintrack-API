@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
-from fintrack_api.api import router
+from src.fintrack_api.api import router
 
 # Initialize the FastAPI application
 app = FastAPI()

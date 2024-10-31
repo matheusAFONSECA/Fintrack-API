@@ -7,8 +7,8 @@ from datetime import datetime, timedelta, timezone
 from fintrack_api.models.userModels import UserInDB
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
-from fintrack_api.services.user import get_user_by_email_for_auth
-from fintrack_api.models.structural.TokenModels import TokenData
+from src.fintrack_api.services.user import get_user_by_email_for_auth
+from src.fintrack_api.models.structural.TokenModels import TokenData
 
 # Load environment variables
 load_dotenv()

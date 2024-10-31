@@ -1,7 +1,7 @@
 from fastapi import HTTPException
-from fintrack_api.services.db import connect
-from fintrack_api.models.userModels import UserIn
-from fintrack_api.utils.frintrack_api_utils import get_password_hash
+from src.fintrack_api.services.db import connect
+from src.fintrack_api.models.userModels import UserIn
+from src.fintrack_api.utils.frintrack_api_utils import get_password_hash
 
 
 async def create_user(user: UserIn) -> None:

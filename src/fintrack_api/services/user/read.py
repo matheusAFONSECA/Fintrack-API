@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import HTTPException
-from fintrack_api.services.db import connect
-from fintrack_api.models.userModels import UserOut, UserInDB
+from src.fintrack_api.services.db import connect
+from src.fintrack_api.models.userModels import UserOut, UserInDB
 
 
 async def get_all_users() -> Optional[List[UserOut]]:
