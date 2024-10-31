@@ -1,5 +1,6 @@
-feat(project): Folder renamed
+feat(project): Remove unused functions, add update/delete routes, and fix visualization route
 
-A folder dedicated 
-to store the CRUD 
-opereations.
+Refactored the project by removing unused functions, restructuring file directories,
+and adding new update and delete routes to improve functionality and maintainability.
+Additionally, corrected the visualization route to support retrieval, update, and
+deletion of all records associated with the specified email parameter.
