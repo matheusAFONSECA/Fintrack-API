@@ -1,5 +1,5 @@
-tests(project): Formating codes
+feat(project): Folder renamed
 
-Codes were formated and
-some unecessary functions
-removed.
+A folder dedicated 
+to store the CRUD 
+opereations.

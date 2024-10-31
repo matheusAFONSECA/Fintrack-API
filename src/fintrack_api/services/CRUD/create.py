@@ -1,7 +1,15 @@
 from fastapi import HTTPException
+from pydantic import BaseModel
 from fintrack_api.services.db import connect
 from fintrack_api.models.userModels import UserIn
-from fintrack_api.utils.frintrack_api_utils import get_password_hash
+
+
+class AddItem(BaseModel):
+    email_id: str
+    item_type: str
+    value: float
+    annotation: str
+    date: str
 
 
 async def create_user(user: UserIn) -> None:
@@ -36,3 +44,21 @@ async def create_user(user: UserIn) -> None:
             conn.commit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def add_item_to_db(table: str, item: AddItem):
+    """Insert an item into the specified table."""
+    query = f"""
+        INSERT INTO {table} (email_id, type, value, annotation, date)
+        VALUES (%(email_id)s, %(item_type)s, %(value)s, %(annotation)s, %(date)s);
+    """
+    parameters = item.dict()
+
+    try:
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, parameters)
+            conn.commit()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+    return {"message": f"{table.capitalize()} added successfully!"}

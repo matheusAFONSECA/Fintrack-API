@@ -228,7 +228,7 @@ def test_register_duplicate_email():
     # Tentativa de registro com o mesmo e-mail
     response = register_user(data)
     assert (
-        response.status_code == 500
+        response.status_code == 400
     )  # Ajustado para 400 se a API retornar isso em vez de 409
     json_response = response.json()
     assert "detail" in json_response

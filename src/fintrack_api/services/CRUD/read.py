@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 from fastapi import HTTPException
 from fintrack_api.services.db import connect
 from fintrack_api.models.userModels import UserOut, UserInDB
@@ -73,3 +73,18 @@ async def get_user_by_email_for_auth(email: str) -> Optional[UserInDB]:
     except Exception as e:
         print(f"Error retrieving user: {e}")  # Debug
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def get_all_items_from_db(table: str) -> List[Dict[str, str]]:
+    """Retrieve all items from the specified table."""
+    query = f"SELECT * FROM {table};"
+
+    try:
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                results = cursor.fetchall()
+                columns = [col[0] for col in cursor.description]
+                return [dict(zip(columns, row)) for row in results]
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
