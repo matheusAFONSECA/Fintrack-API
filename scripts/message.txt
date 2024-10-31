@@ -1,4 +1,5 @@
-feat(project): Ajusting register route
+feat(project): Folder renamed
 
-Route of register wasn't running 
-properly, but now it's running.
+A folder dedicated 
+to store the CRUD 
+opereations.
