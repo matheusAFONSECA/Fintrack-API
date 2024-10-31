@@ -5,10 +5,10 @@ from jwt.exceptions import InvalidTokenError
 from typing import Annotated, Optional, Union
 from datetime import datetime, timedelta, timezone
 from fintrack_api.models.userModels import UserInDB
+from fintrack_api.models.TokenModels import TokenData
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
 from fintrack_api.services.CRUD import get_user_by_email_for_auth
-from fintrack_api.models.TokenModels import TokenData
 
 # Load environment variables
 load_dotenv()
