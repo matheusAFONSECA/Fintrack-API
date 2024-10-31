@@ -26,9 +26,6 @@ async def create_user(user: UserIn) -> None:
         INSERT INTO "user" (name, email, password)
         VALUES (%(name)s, %(email)s, %(password)s);
     """
-
-    # Hash the password before storing it in the database
-    # hashed_password = get_password_hash(user.password)
     hashed_password = user.password
 
     parameters = {

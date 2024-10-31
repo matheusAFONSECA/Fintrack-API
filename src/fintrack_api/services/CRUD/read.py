@@ -75,14 +75,33 @@ async def get_user_by_email_for_auth(email: str) -> Optional[UserInDB]:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-async def get_all_items_from_db(table: str) -> List[Dict[str, str]]:
-    """Retrieve all items from the specified table."""
-    query = f"SELECT * FROM {table};"
+async def get_all_items_from_db(
+    table: str, email: Optional[str] = None
+) -> List[Dict[str, str]]:
+    """
+    Retrieve all items from the specified table, optionally filtered by email.
+
+    Args:
+        table (str): The name of the table to retrieve data from.
+        email (Optional[str]): The email to filter the results by (if provided).
+
+    Returns:
+        List[Dict[str, str]]: A list of dictionary items representing the records.
+
+    Raises:
+        HTTPException: If an error occurs during database access.
+    """
+    if email:
+        query = f"SELECT * FROM {table} WHERE email_id = %(email)s;"
+        parameters = {"email": email}
+    else:
+        query = f"SELECT * FROM {table};"
+        parameters = {}
 
     try:
         with connect() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, parameters)
                 results = cursor.fetchall()
                 columns = [col[0] for col in cursor.description]
                 return [dict(zip(columns, row)) for row in results]

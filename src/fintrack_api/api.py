@@ -1,5 +1,5 @@
-from typing import Dict
-from fastapi import APIRouter, HTTPException, Depends, status
+from typing import Dict, Optional
+from fastapi import APIRouter, HTTPException, Depends, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fintrack_api.models.userModels import UserIn
 from fintrack_api.services.CRUD import create_user
@@ -9,6 +9,18 @@ from fintrack_api.services.CRUD.read import get_all_items_from_db
 from fintrack_api.utils.frintrack_api_utils import (
     validate_email_format,
     validate_password_strength,
+)
+from fintrack_api.services.CRUD.update import (
+    update_revenue_by_email,
+    update_expenditure_by_email,
+    update_alert_by_email,
+    update_reminder_by_email,
+)
+from fintrack_api.services.CRUD.delete import (
+    delete_revenue_by_email,
+    delete_expenditure_by_email,
+    delete_alert_by_email,
+    delete_reminder_by_email,
 )
 
 router = APIRouter()
@@ -146,51 +158,123 @@ visualization_router = APIRouter(prefix="/visualization", tags=["Visualization"]
 
 
 @visualization_router.get("/revenue")
-async def get_all_revenue():
+async def get_all_revenue(email: Optional[str] = Query(None)):
     """
-    Retrieve all revenue entries from the database.
+    Retrieve all revenue entries, optionally filtered by email.
+
+    Args:
+        email (Optional[str]): The email to filter the results by (if provided).
 
     Returns:
-        List[Dict]: A list of all revenue entries.
+        List[Dict[str, str]]: A list of revenue entries.
     """
-    return await get_all_items_from_db("revenue")
+    return await get_all_items_from_db("revenue", email)
 
 
 @visualization_router.get("/expenditure")
-async def get_all_expenditure():
+async def get_all_expenditure(email: Optional[str] = Query(None)):
     """
-    Retrieve all expenditure entries from the database.
+    Retrieve all expenditure entries, optionally filtered by email.
+
+    Args:
+        email (Optional[str]): The email to filter the results by (if provided).
 
     Returns:
-        List[Dict]: A list of all expenditure entries.
+        List[Dict[str, str]]: A list of expenditure entries.
     """
-    return await get_all_items_from_db("expenditure")
+    return await get_all_items_from_db("expenditure", email)
 
 
 @visualization_router.get("/alert")
-async def get_all_alerts():
+async def get_all_alerts(email: Optional[str] = Query(None)):
     """
-    Retrieve all alert entries from the database.
+    Retrieve all alert entries, optionally filtered by email.
+
+    Args:
+        email (Optional[str]): The email to filter the results by (if provided).
 
     Returns:
-        List[Dict]: A list of all alert entries.
+        List[Dict[str, str]]: A list of alert entries.
     """
-    return await get_all_items_from_db("alert")
+    return await get_all_items_from_db("alert", email)
 
 
 @visualization_router.get("/reminder")
-async def get_all_reminders():
+async def get_all_reminders(email: Optional[str] = Query(None)):
     """
-    Retrieve all reminder entries from the database.
+    Retrieve all reminder entries, optionally filtered by email.
+
+    Args:
+        email (Optional[str]): The email to filter the results by (if provided).
 
     Returns:
-        List[Dict]: A list of all reminder entries.
+        List[Dict[str, str]]: A list of reminder entries.
     """
-    return await get_all_items_from_db("reminder")
+    return await get_all_items_from_db("reminder", email)
+
+
+# -------------------- UPDATE ROUTES -------------------- #
+
+update_router = APIRouter(prefix="/update", tags=["Update"])
+
+
+@update_router.put("/revenue")
+async def update_revenue(email: str, updated_data: dict):
+    """Update a revenue entry by email."""
+    return await update_revenue_by_email(email, updated_data)
+
+
+@update_router.put("/expenditure")
+async def update_expenditure(email: str, updated_data: dict):
+    """Update an expenditure entry by email."""
+    return await update_expenditure_by_email(email, updated_data)
+
+
+@update_router.put("/alert")
+async def update_alert(email: str, updated_data: dict):
+    """Update an alert entry by email."""
+    return await update_alert_by_email(email, updated_data)
+
+
+@update_router.put("/reminder")
+async def update_reminder(email: str, updated_data: dict):
+    """Update a reminder entry by email."""
+    return await update_reminder_by_email(email, updated_data)
+
+
+# -------------------- DELETE ROUTES -------------------- #
+
+delete_router = APIRouter(prefix="/delete", tags=["Delete"])
+
+
+@delete_router.delete("/revenue")
+async def delete_revenue(email: str):
+    """Delete a revenue entry by email."""
+    return await delete_revenue_by_email(email)
+
+
+@delete_router.delete("/expenditure")
+async def delete_expenditure(email: str):
+    """Delete an expenditure entry by email."""
+    return await delete_expenditure_by_email(email)
+
+
+@delete_router.delete("/alert")
+async def delete_alert(email: str):
+    """Delete an alert entry by email."""
+    return await delete_alert_by_email(email)
+
+
+@delete_router.delete("/reminder")
+async def delete_reminder(email: str):
+    """Delete a reminder entry by email."""
+    return await delete_reminder_by_email(email)
 
 
 # -------------------- INCLUDE ROUTERS -------------------- #
 
+router.include_router(update_router)
+router.include_router(delete_router)
 router.include_router(user_router)
 router.include_router(add_router)
 router.include_router(visualization_router)
