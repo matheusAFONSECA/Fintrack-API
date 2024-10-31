@@ -1,5 +1,4 @@
-feat(project): add POST and GET methods for user, revenue, expenditure, alert, and reminder
+feat(project): Ajusting register route
 
-Added POST methods for user registration, login, and data insertion
-(revenue, expenditure, alert, reminder), along with GET methods for
-retrieving all entries.
+Route of register wasn't running 
+properly, but now it's running.

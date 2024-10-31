@@ -9,7 +9,7 @@ class AddItem(BaseModel):
     item_type: str
     value: float
     annotation: str
-    date: str | None = None
+    date: str
 
 
 async def create_user(user: UserIn) -> None:

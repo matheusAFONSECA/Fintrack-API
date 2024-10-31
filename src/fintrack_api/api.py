@@ -48,7 +48,7 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/register", response_model=Dict[str, str])
+@router.post("/user/register", response_model=Dict[str, str])
 async def register_new_user(user: UserIn) -> Dict[str, str]:
     """
     Register a new user in the system.
