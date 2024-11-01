@@ -1,7 +1,6 @@
 import random
 import string
 import requests
-import bcrypt
 
 # URL base da API
 BASE_URL = "http://localhost:8000"
@@ -19,6 +18,9 @@ def login_user(data):
 # Função auxliar para adicionar um novo alerta
 def add_alert(data):
     return requests.post(f"{BASE_URL}/add/alert", json=data)
+
+def add_reminder(data):
+    return requests.post(f"{BASE_URL}/add/reminder", json=data)
 
 
 # Função auxiliar para gerar um e-mail aleatório

@@ -63,8 +63,9 @@ def validate_email_format(email: str) -> None:
     """
     pattern = r"^[\w\.-]+@[\w\.-]+\.(com|br)$"
     if not re.match(pattern, email):
-        raise ValueError(
-            "The email must be in the format 'name@domain.com' or 'name@domain.br'."
+        raise HTTPException(
+            status_code=400,
+            detail="The email must be in the format 'name@domain.com' or 'name@domain.br'.",
         )
     
 

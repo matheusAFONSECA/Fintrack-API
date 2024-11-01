@@ -14,6 +14,23 @@ from tests.utils.test_utils import (
 # Testes com o endpoint de adicionar alarme
 
 
+# Teste de erro - email inválido
+def test_add_reminder_invalid_email():
+    date = generate_random_date()
+    data = {
+        "email_id": "matheusfonseca",  # Email sem formato válido
+        "item_type": "Pagamento de Empréstimo",
+        "value": 500.00,
+        "annotation": "Parcela de outubro",
+        "date": date
+    }
+    response = add_alert(data)
+    assert response.status_code == 400, f"Expected 400, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "The email must be in the format 'name@domain.com' or 'name@domain.br'." in json_response["detail"]
+
+
 # Teste de adição de alarme com e-mail inexistente
 def test_add_alert_nonexistent_email():
     # Dados de alerta para e-mail não registrado

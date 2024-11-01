@@ -77,6 +77,7 @@ async def register_new_user(user: UserIn) -> Dict[str, str]:
     """
     try:
         validate_email_format(user.email)
+
         validate_password_strength(user.password)
 
         await create_user(user)
@@ -136,6 +137,8 @@ async def add_alert(item: AddItem):
     Returns:
         Dict[str, str]: A message confirming the successful addition.
     """
+    validate_email_format(item.email_id)
+
     # Validação para existência do e-mail
     if not email_exists(item.email_id):
         raise HTTPException(status_code=404, detail="This email does not exist in database.")
@@ -162,6 +165,10 @@ async def add_reminder(item: AddItem):
     Returns:
         Dict[str, str]: A message confirming the successful addition.
     """
+    print(item.email_id)
+    print(type(item.email_id))
+    validate_email_format(item.email_id)
+
     return await add_item_to_db("reminder", item)
 
 

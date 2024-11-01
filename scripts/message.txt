@@ -1,5 +1,4 @@
-test(project): Organizing tests
+test(project): Making tests for reminder
 
-Tests files where created
-to separate the tests from
-a main file.
+Tests dedicated to test the
+route: add/reminder.
