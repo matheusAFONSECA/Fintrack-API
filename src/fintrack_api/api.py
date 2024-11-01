@@ -9,6 +9,7 @@ from fintrack_api.dependencies import authenticate_user, create_access_token
 from fintrack_api.utils.frintrack_api_utils import (
     validate_email_format,
     validate_password_strength,
+    email_exists,
 )
 from fintrack_api.services.CRUD.update import (
     update_revenue_by_email,
@@ -135,6 +136,18 @@ async def add_alert(item: AddItem):
     Returns:
         Dict[str, str]: A message confirming the successful addition.
     """
+    # Validação para existência do e-mail
+    if not email_exists(item.email_id):
+        raise HTTPException(status_code=404, detail="This email does not exist in database.")
+    
+    # Validação de valor
+    if item.value <= 0:
+        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
+
+    # Validação de data
+    if not item.date:
+        raise HTTPException(status_code=400, detail="A data é obrigatória para o alerta.")
+
     return await add_item_to_db("alert", item)
 
 

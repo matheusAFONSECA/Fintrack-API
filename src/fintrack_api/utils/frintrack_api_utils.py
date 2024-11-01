@@ -1,6 +1,7 @@
 import re
 from fastapi import HTTPException
 from passlib.context import CryptContext
+from fintrack_api.services.db import connect
 
 # Initialize the bcrypt context for password hashing and verification
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -65,3 +66,31 @@ def validate_email_format(email: str) -> None:
         raise ValueError(
             "The email must be in the format 'name@domain.com' or 'name@domain.br'."
         )
+    
+
+def email_exists(email):
+    """
+    Check if the email already exists in the database.
+
+    Args:
+        email (str): The email address to check.
+
+    Returns:
+        bool: True if the email exists, False otherwise.
+    """
+    query = """
+        SELECT u.email
+        FROM "user" u
+        WHERE u.email = %(email)s;
+    """
+
+    with connect() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(query, {"email": email})
+            result = cursor.fetchone()
+
+            if result:
+                print(f"Query result: {result}")  # Debug
+                return True
+            print("No user found.")  # Debug
+            return None
