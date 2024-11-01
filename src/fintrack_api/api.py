@@ -1,11 +1,11 @@
 from typing import Dict, Optional
-from fastapi import APIRouter, HTTPException, Depends, Query, status
-from fastapi.security import OAuth2PasswordRequestForm
 from fintrack_api.models.userModels import UserIn
 from fintrack_api.services.CRUD import create_user
-from fintrack_api.dependencies import authenticate_user, create_access_token
-from fintrack_api.services.CRUD.create import AddItem, add_item_to_db
+from fastapi.security import OAuth2PasswordRequestForm
 from fintrack_api.services.CRUD.read import get_all_items_from_db
+from fastapi import APIRouter, HTTPException, Depends, Query, status
+from fintrack_api.services.CRUD.create import AddItem, add_item_to_db
+from fintrack_api.dependencies import authenticate_user, create_access_token
 from fintrack_api.utils.frintrack_api_utils import (
     validate_email_format,
     validate_password_strength,

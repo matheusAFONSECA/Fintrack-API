@@ -1,5 +1,5 @@
-from typing import Dict, List, Optional
 from fastapi import HTTPException
+from typing import Dict, List, Optional
 from fintrack_api.services.db import connect
 from fintrack_api.models.userModels import UserOut, UserInDB
 
