@@ -3,9 +3,87 @@ import uuid
 from tests.utils.test_utils import (
     BASE_URL,
     register_user,
-    generate_random_email,
     login_user,
+    add_alert,
+    generate_random_email,
+    generate_random_date,
 )
+
+# Testes com o endpoint de adicionar alarme
+
+# Teste de sucesso - adição de alarme válida
+def test_add_alert_success():
+    # Registro de um usuário para testar a adição do alerta
+    email = generate_random_email()
+    register_data = {
+        "name": "Test User",
+        "email": email,
+        "password": "senha123",
+    }
+    register_response = register_user(register_data)
+    assert (
+        register_response.status_code == 200
+    ), "Registro falhou durante o testar a adição do alerta."
+
+    # Dados de alerta
+    date = generate_random_date()
+    add_alert_data = {
+        "email_id": email,
+        "item_type": "Saldo Negativo",
+        "value": 50.00,
+        "annotation": "Saldo abaixo do limite",
+        "date":date
+    }
+    add_alert_response = add_alert(add_alert_data)
+    assert (
+        add_alert_response.status_code == 200
+    ), f"Expected status 200, got {add_alert_response.status_code}"
+
+
+# Teste de erro - método HTTP incorreto (GET)
+def test_add_alert_wrong_method_get():
+    response = requests.get(f"{BASE_URL}/add/alert")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+
+# Teste de erro - método HTTP incorreto (PUT)
+def test_add_alert_wrong_method_put():
+    response = requests.put(f"{BASE_URL}/add/alert")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+
+# Teste de erro - método HTTP incorreto (PATCH)
+def test_add_alert_wrong_method_patch():
+    response = requests.patch(f"{BASE_URL}/add/alert")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+
+# Teste de erro - método HTTP incorreto (DELETE)
+def test_add_alert_wrong_method_delete():
+    response = requests.delete(f"{BASE_URL}/add/alert")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+
 
 # Testes com o endpoint de login de usuário
 

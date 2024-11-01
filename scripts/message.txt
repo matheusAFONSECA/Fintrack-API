@@ -1,4 +1,4 @@
-docs(project): Update documentation and project structure guidelines
+test(project): tests for add alert
 
-Comprehensive documentation added for the entire code structure,
-detailing models, services, utilities, and API routes.
+Tests dedicated to test 
+the route add alert.
