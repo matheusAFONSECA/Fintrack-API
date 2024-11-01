@@ -156,7 +156,7 @@ This will start the Fintrack-API and allow you to make requests for managing fin
 There are tests to test this API, to run the test it's necessary to run the following command:
 
 ```bash
-pytest src/tests/test_main.py
+pytest --html=report.html --self-contained-html --cov=./ --cov-report=html --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
 ```
 
 > **Remember:** Make sure that the API is running before using the tests.
