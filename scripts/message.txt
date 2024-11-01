@@ -1,4 +1,4 @@
-test(project): tests for add alert
+test(project): tests for add reminder
 
 Tests dedicated to test 
-the route add alert.
+the route add reminder.

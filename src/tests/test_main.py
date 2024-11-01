@@ -9,6 +9,50 @@ from tests.utils.test_utils import (
     generate_random_date,
 )
 
+# ------------------------------------------------------------------------------------------------------------
+
+# Testes com o endpoint de adicionar lembretes
+
+
+# Teste de método não permitido
+def test_add_reminder_disallowed_methods():
+    response = requests.get(f"{BASE_URL}/add/reminder")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método PUT
+    response = requests.get(f"{BASE_URL}/add/reminder")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método DELETE
+    response = requests.get(f"{BASE_URL}/add/reminder")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+    # Testa método patch
+    response = requests.get(f"{BASE_URL}/add/reminder")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+# -------------------------------------------------------------------------------------------------
+
 # Testes com o endpoint de adicionar alarme
 
 
@@ -137,8 +181,35 @@ def test_add_alert_success():
     ), f"Expected status 200, got {add_alert_response.status_code}"
 
 
-# Teste de erro - método HTTP incorreto (GET)
-def test_add_alert_wrong_method_get():
+def test_add_alert_disallowed_methods():
+    # Testa método GET
+    response = requests.get(f"{BASE_URL}/add/alert")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método PUT
+    response = requests.get(f"{BASE_URL}/add/alert")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método DELETE
+    response = requests.get(f"{BASE_URL}/add/alert")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+
+    # Testa método patch
     response = requests.get(f"{BASE_URL}/add/alert")
     assert (
         response.status_code == 405
@@ -148,37 +219,7 @@ def test_add_alert_wrong_method_get():
     assert "Method Not Allowed" in json_response["detail"]
 
 
-# Teste de erro - método HTTP incorreto (PUT)
-def test_add_alert_wrong_method_put():
-    response = requests.put(f"{BASE_URL}/add/alert")
-    assert (
-        response.status_code == 405
-    ), f"Expected status 405, got {response.status_code}"
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
-
-
-# Teste de erro - método HTTP incorreto (PATCH)
-def test_add_alert_wrong_method_patch():
-    response = requests.patch(f"{BASE_URL}/add/alert")
-    assert (
-        response.status_code == 405
-    ), f"Expected status 405, got {response.status_code}"
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
-
-
-# Teste de erro - método HTTP incorreto (DELETE)
-def test_add_alert_wrong_method_delete():
-    response = requests.delete(f"{BASE_URL}/add/alert")
-    assert (
-        response.status_code == 405
-    ), f"Expected status 405, got {response.status_code}"
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
+# ------------------------------------------------------------------------------------------------------
 
 
 # Testes com o endpoint de login de usuário
@@ -280,9 +321,35 @@ def test_login_missing_password():
     assert json_response["detail"][0]["msg"] == "Field required"
     assert json_response["detail"][0]["loc"] == ["body", "password"]
 
+# Tests de métodos não permitidos
+def test_login_disallowed_methods():
+    response = requests.get(f"{BASE_URL}/user/login")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método PUT
+    response = requests.get(f"{BASE_URL}/user/login")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método DELETE
+    response = requests.get(f"{BASE_URL}/user/login")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
 
-# Teste de erro - método HTTP incorreto (GET)
-def test_login_wrong_method_get():
+    # Testa método patch
     response = requests.get(f"{BASE_URL}/user/login")
     assert (
         response.status_code == 405
@@ -292,37 +359,7 @@ def test_login_wrong_method_get():
     assert "Method Not Allowed" in json_response["detail"]
 
 
-# Teste de erro - método HTTP incorreto (PUT)
-def test_login_wrong_method_put():
-    response = requests.put(f"{BASE_URL}/user/login")
-    assert (
-        response.status_code == 405
-    ), f"Expected status 405, got {response.status_code}"
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
-
-
-# Teste de erro - método HTTP incorreto (PATCH)
-def test_login_wrong_method_patch():
-    response = requests.patch(f"{BASE_URL}/user/login")
-    assert (
-        response.status_code == 405
-    ), f"Expected status 405, got {response.status_code}"
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
-
-
-# Teste de erro - método HTTP incorreto (DELETE)
-def test_login_wrong_method_delete():
-    response = requests.delete(f"{BASE_URL}/user/login")
-    assert (
-        response.status_code == 405
-    ), f"Expected status 405, got {response.status_code}"
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
+# ------------------------------------------------------------------------------------------------------------
 
 
 # Testes com o endpoint de registro de usuário
@@ -458,37 +495,39 @@ def test_register_missing_name():
     assert json_response["detail"][0]["loc"] == ["body", "name"]
 
 
-# Teste de erro - método HTTP incorreto (GET)
-def test_register_wrong_method_get():
+# Tests de métodos não permitidos
+def test_register_disallowed_methods():
     response = requests.get(f"{BASE_URL}/user/register")
-    assert response.status_code == 405
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método PUT
+    response = requests.get(f"{BASE_URL}/user/register")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Method Not Allowed" in json_response["detail"]
+    
+    # Testa método DELETE
+    response = requests.get(f"{BASE_URL}/user/register")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
     json_response = response.json()
     assert "detail" in json_response
     assert "Method Not Allowed" in json_response["detail"]
 
-
-# Teste de erro - método HTTP incorreto (PUT)
-def test_register_wrong_method_put():
-    response = requests.put(f"{BASE_URL}/user/register")
-    assert response.status_code == 405
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
-
-
-# Teste de erro - método HTTP incorreto (PATCH)
-def test_register_wrong_method_patch():
-    response = requests.patch(f"{BASE_URL}/user/register")
-    assert response.status_code == 405
-    json_response = response.json()
-    assert "detail" in json_response
-    assert "Method Not Allowed" in json_response["detail"]
-
-
-# Teste de erro - método HTTP incorreto (DELETE)
-def test_register_wrong_method_delete():
-    response = requests.delete(f"{BASE_URL}/user/register")
-    assert response.status_code == 405
+    # Testa método patch
+    response = requests.get(f"{BASE_URL}/user/register")
+    assert (
+        response.status_code == 405
+    ), f"Expected status 405, got {response.status_code}"
     json_response = response.json()
     assert "detail" in json_response
     assert "Method Not Allowed" in json_response["detail"]
