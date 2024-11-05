@@ -1,4 +1,4 @@
-test(project): Making tests for reminder
+test(project): Updating requirements
 
-Tests dedicated to test the
-route: add/reminder.
+Updating requirements,
+adding new libs used.
