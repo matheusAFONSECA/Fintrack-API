@@ -26,9 +26,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Start API in Background
+        run: |
+          nohup python src/main.py & # Inicia a API em segundo plano na porta 8000
+          sleep 10 # Aguarda para garantir que a API esteja ativa
+
       - name: Run Tests
         env:
-          API_URL: "https://fintrack-f1dbro7d6-franciscopguimaraes-projects.vercel.app" # URL da API no Vercel
+          API_URL: "http://localhost:8000" 
         run: |
           pytest --html=report.html --self-contained-html --cov=./ --cov-report=html --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
 
