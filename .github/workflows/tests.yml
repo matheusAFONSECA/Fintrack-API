@@ -26,10 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Start API
+      - name: Start API in Background
         run: |
-          python src/main.py & 
-          sleep 30
+          nohup python src/main.py & 
+          sleep 10 
 
       - name: Run Tests
         run: |
