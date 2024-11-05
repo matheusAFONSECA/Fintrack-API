@@ -28,8 +28,8 @@ jobs:
 
       - name: Start API
         run: |
-          python src/main.py & # Inicia a API em segundo plano
-          sleep 5 # Aguarda alguns segundos para garantir que a API esteja ativa
+          python src/main.py & 
+          sleep 30
 
       - name: Run Tests
         run: |
