@@ -28,8 +28,9 @@ jobs:
 
       - name: Start API in Background
         run: |
-          nohup python src/main.py & # Inicia a API em segundo plano na porta 8000
-          sleep 10 # Aguarda para garantir que a API esteja ativa
+          nohup python src/main.py & 
+          sleep 10 
+          curl --retry 5 --retry-delay 5 --retry-connrefused http://localhost:8000/health || exit 1
 
       - name: Run Tests
         env:
