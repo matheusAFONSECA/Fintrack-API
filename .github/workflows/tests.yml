@@ -26,19 +26,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Start API in Background
-        run: |
-          nohup python src/main.py & 
-
-      - name: Download wait-for-it
-        run: |
-          curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-          chmod +x wait-for-it.sh
-
-      - name: Wait for API to be ready
-        run: ./wait-for-it.sh localhost:8000 --timeout=30
-
       - name: Run Tests
+        env:
+          API_URL: "https://fintrack-f1dbro7d6-franciscopguimaraes-projects.vercel.app" # URL da API no Vercel
         run: |
           pytest --html=report.html --self-contained-html --cov=./ --cov-report=html --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
 
