@@ -30,3 +30,24 @@ jobs:
       - name: Run Tests
         run: |
           pytest src/tests/test_main.py --html=report.html --self-contained-html --cov=./ --cov-report=html --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
+
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: report.html
+
+      - name: Upload Log File
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logfile
+          path: logfile.log
+
+      - name: Upload Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ./htmlcov
