@@ -1,4 +1,4 @@
-test(project): Updating folders and config
+test(project): tests for reminder done
 
-Updating folders names and adding
-a file to rule the config.
+All the tests of reminder were
+done and they run properly.

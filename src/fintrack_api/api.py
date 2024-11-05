@@ -165,9 +165,20 @@ async def add_reminder(item: AddItem):
     Returns:
         Dict[str, str]: A message confirming the successful addition.
     """
-    print(item.email_id)
-    print(type(item.email_id))
+
     validate_email_format(item.email_id)
+
+    # Validação para existência do e-mail
+    if not email_exists(item.email_id):
+        raise HTTPException(status_code=404, detail="This email does not exist in database.")
+
+    # Validação de data
+    if not item.date:
+        raise HTTPException(status_code=400, detail="A data é obrigatória para o alerta.")
+    
+    # Validação de valor
+    if item.value <= 0:
+        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
 
     return await add_item_to_db("reminder", item)
 
