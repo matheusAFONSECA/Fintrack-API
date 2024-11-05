@@ -29,7 +29,14 @@ jobs:
       - name: Start API in Background
         run: |
           nohup python src/main.py & 
-          sleep 10 
+
+      - name: Download wait-for-it
+        run: |
+          curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+          chmod +x wait-for-it.sh
+
+      - name: Wait for API to be ready
+        run: ./wait-for-it.sh localhost:8000 --timeout=30
 
       - name: Run Tests
         run: |
