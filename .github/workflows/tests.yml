@@ -25,7 +25,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest-html pytest-cov
+
+      - name: Start API
+        run: |
+          python src/main.py & # Inicia a API em segundo plano
+          sleep 5 # Aguarda alguns segundos para garantir que a API esteja ativa
 
       - name: Run Tests
         run: |
