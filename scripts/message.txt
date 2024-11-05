@@ -1,4 +1,4 @@
-test(project): Updating requirements
+test(project): Updating folders and config
 
-Updating requirements,
-adding new libs used.
+Updating folders names and adding
+a file to rule the config.
