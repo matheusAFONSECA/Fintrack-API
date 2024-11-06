@@ -1,4 +1,4 @@
-test(project): tests for reminder done
+test(project): tests for revenue done
 
-All the tests of reminder were
+All the tests of revenue were
 done and they run properly.

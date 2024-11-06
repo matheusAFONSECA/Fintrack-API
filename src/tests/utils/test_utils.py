@@ -19,8 +19,13 @@ def login_user(data):
 def add_alert(data):
     return requests.post(f"{BASE_URL}/add/alert", json=data)
 
+# Função auxiliar para adicionar um novo lembrete
 def add_reminder(data):
     return requests.post(f"{BASE_URL}/add/reminder", json=data)
+
+# Função auxiliar para adicionar uma nova receita
+def add_revenue(data):
+    return requests.post(f"{BASE_URL}/add/revenue", json=data)
 
 
 # Função auxiliar para gerar um e-mail aleatório

@@ -61,7 +61,7 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/user/register", response_model=Dict[str, str])
+@user_router.post("/register", response_model=Dict[str, str])
 async def register_new_user(user: UserIn) -> Dict[str, str]:
     """
     Register a new user in the system.
@@ -109,6 +109,21 @@ async def add_revenue(item: AddItem):
     Returns:
         Dict[str, str]: A message confirming the successful addition.
     """
+
+    validate_email_format(item.email_id)
+
+    # Validação para existência do e-mail
+    if not email_exists(item.email_id):
+        raise HTTPException(status_code=404, detail="This email does not exist in database.")
+
+    # Validação de data
+    if not item.date:
+        raise HTTPException(status_code=400, detail="The data is obrigatory to send.")
+    
+    # Validação de valor
+    if item.value <= 0:
+        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
+    
     return await add_item_to_db("revenue", item)
 
 
