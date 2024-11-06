@@ -21,7 +21,26 @@ async def get_all_revenue(email: Optional[str] = Query(None)):
     Returns:
         List[Dict[str, str]]: A list of revenue entries.
     """
-    return await get_all_items_from_db("revenue", email)
+
+    # Verifica se o parâmetro email foi passado
+    if email is None:
+        raise HTTPException(
+            status_code=400, detail="The 'email' parameter is required."
+        )
+
+    # Verifica se o parâmetro email foi passado e se é válido
+    if email:
+        validate_email_format(email)  # Valida o formato do e-mail
+
+        # Consulta o banco de dados usando o email
+        revenues = await get_all_items_from_db("revenue", email)
+        if not revenues:
+            raise HTTPException(status_code=404, detail="Email not found")
+    else:
+        # Se email não for fornecido, retorna todos as receitas sem filtro
+        revenues = await get_all_items_from_db("revenue")
+
+    return {"revenues": revenues}
 
 
 @visualization_router.get("/expenditure")
@@ -58,13 +77,7 @@ async def get_all_alerts(email: Optional[str] = Query(None)):
 
     # Verifica se o parâmetro email foi passado e se é válido
     if email:
-        try:
-            validate_email_format(email)  # Valida o formato do e-mail
-        except HTTPException:
-            raise HTTPException(
-                status_code=400,
-                detail="The email must be in the format 'name@domain.com' or 'name@domain.br'.",
-            )
+        validate_email_format(email)  # Valida o formato do e-mail
 
         # Consulta o banco de dados usando o email
         alerts = await get_all_items_from_db("alert", email)
