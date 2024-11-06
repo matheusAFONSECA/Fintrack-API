@@ -1,7 +1,6 @@
-from typing import Dict
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fintrack_api.services.CRUD.create import AddItem, add_item_to_db
-from fintrack_api.utils.frintrack_api_utils import validate_email_format, email_exists, validate_infos
+from fintrack_api.utils.frintrack_api_utils import validate_email_format, validate_infos
 
 # -------------------- ADD ROUTES -------------------- #
 
