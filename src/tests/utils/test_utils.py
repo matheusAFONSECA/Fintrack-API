@@ -36,6 +36,11 @@ def add_expenditure(data):
     return requests.post(f"{BASE_URL}/add/expenditure", json=data)
 
 
+# Função auxiliar para visualizar um alerta
+def visualize_alert(data):
+    return requests.get(f"{BASE_URL}/visualization/alert", params=data)
+
+
 # Função auxiliar para gerar um e-mail aleatório
 def generate_random_email():
     random_str = "".join(random.choices(string.ascii_lowercase + string.digits, k=10))

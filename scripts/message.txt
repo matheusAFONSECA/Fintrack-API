@@ -1,6 +1,4 @@
-feat(project): refatoring code
+test(project): testing route of visualization alert
 
-Now the code is 
-been refatoring
-to simplify the
-code.
+Tests to test the route of visualization 
+alert, the code is running properly.

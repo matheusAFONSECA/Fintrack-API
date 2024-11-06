@@ -1,6 +1,8 @@
 from typing import Optional
+from fastapi import HTTPException
 from fastapi import APIRouter, Query
 from fintrack_api.services.CRUD.read import get_all_items_from_db
+from fintrack_api.utils.frintrack_api_utils import validate_email_format
 
 
 # -------------------- VISUALIZATION ROUTES -------------------- #
@@ -47,7 +49,32 @@ async def get_all_alerts(email: Optional[str] = Query(None)):
     Returns:
         List[Dict[str, str]]: A list of alert entries.
     """
-    return await get_all_items_from_db("alert", email)
+
+    # Verifica se o parâmetro email foi passado
+    if email is None:
+        raise HTTPException(
+            status_code=400, detail="The 'email' parameter is required."
+        )
+
+    # Verifica se o parâmetro email foi passado e se é válido
+    if email:
+        try:
+            validate_email_format(email)  # Valida o formato do e-mail
+        except HTTPException:
+            raise HTTPException(
+                status_code=400,
+                detail="The email must be in the format 'name@domain.com' or 'name@domain.br'.",
+            )
+
+        # Consulta o banco de dados usando o email
+        alerts = await get_all_items_from_db("alert", email)
+        if not alerts:
+            raise HTTPException(status_code=404, detail="Email not found")
+    else:
+        # Se email não for fornecido, retorna todos os alertas sem filtro
+        alerts = await get_all_items_from_db("alert")
+
+    return {"alerts": alerts}
 
 
 @visualization_router.get("/reminder")
