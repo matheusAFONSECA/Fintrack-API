@@ -5,6 +5,8 @@ import requests
 # URL base da API
 BASE_URL = "http://localhost:8000"
 
+# ---------------------- Funções de registro e login ----------------------
+
 
 # Função auxiliar para registro de usuário
 def register_user(data):
@@ -14,6 +16,9 @@ def register_user(data):
 # Função auxiliar para login do usuário
 def login_user(data):
     return requests.post(f"{BASE_URL}/user/login", data=data)
+
+
+# ---------------------- Funções de adição ----------------------
 
 
 # Função auxliar para adicionar um novo alerta
@@ -31,6 +36,9 @@ def add_revenue(data):
     return requests.post(f"{BASE_URL}/add/revenue", json=data)
 
 
+# ---------------------- Funções de visualização ----------------------
+
+
 # Função auxiliar para adicionar uma nova despesa
 def add_expenditure(data):
     return requests.post(f"{BASE_URL}/add/expenditure", json=data)
@@ -44,6 +52,19 @@ def visualize_alert(data):
 # Função auxiliar para visualizar uma receita
 def visualize_revenue(data):
     return requests.get(f"{BASE_URL}/visualization/revenue", params=data)
+
+
+# Função auxiliar para visualizar um lembrete
+def visualize_reminder(data):
+    return requests.get(f"{BASE_URL}/visualization/reminder", params=data)
+
+
+# Função auxiliar para visualizar uma despesa
+def visualize_expenditure(data):
+    return requests.get(f"{BASE_URL}/visualization/expenditure", params=data)
+
+
+# ---------------------- Funções auxiliares ----------------------
 
 
 # Função auxiliar para gerar um e-mail aleatório

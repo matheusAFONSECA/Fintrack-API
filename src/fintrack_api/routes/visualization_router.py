@@ -9,6 +9,9 @@ from fintrack_api.utils.frintrack_api_utils import validate_email_format
 
 visualization_router = APIRouter(prefix="/visualization", tags=["Visualization"])
 
+EMAIL_REQUIRED = "The 'email' parameter is required."
+EMAIL_NOT_FOUND = "Email not found"
+
 
 @visualization_router.get("/revenue")
 async def get_all_revenue(email: Optional[str] = Query(None)):
@@ -24,9 +27,7 @@ async def get_all_revenue(email: Optional[str] = Query(None)):
 
     # Verifica se o parâmetro email foi passado
     if email is None:
-        raise HTTPException(
-            status_code=400, detail="The 'email' parameter is required."
-        )
+        raise HTTPException(status_code=400, detail=EMAIL_REQUIRED)
 
     # Verifica se o parâmetro email foi passado e se é válido
     if email:
@@ -35,10 +36,7 @@ async def get_all_revenue(email: Optional[str] = Query(None)):
         # Consulta o banco de dados usando o email
         revenues = await get_all_items_from_db("revenue", email)
         if not revenues:
-            raise HTTPException(status_code=404, detail="Email not found")
-    else:
-        # Se email não for fornecido, retorna todos as receitas sem filtro
-        revenues = await get_all_items_from_db("revenue")
+            raise HTTPException(status_code=404, detail=EMAIL_NOT_FOUND)
 
     return {"revenues": revenues}
 
@@ -54,7 +52,20 @@ async def get_all_expenditure(email: Optional[str] = Query(None)):
     Returns:
         List[Dict[str, str]]: A list of expenditure entries.
     """
-    return await get_all_items_from_db("expenditure", email)
+    # Verifica se o parâmetro email foi passado
+    if email is None:
+        raise HTTPException(status_code=400, detail=EMAIL_REQUIRED)
+
+    # Verifica se o parâmetro email foi passado e se é válido
+    if email:
+        validate_email_format(email)  # Valida o formato do e-mail
+
+        # Consulta o banco de dados usando o email
+        expenditures = await get_all_items_from_db("expenditure", email)
+        if not expenditures:
+            raise HTTPException(status_code=404, detail=EMAIL_NOT_FOUND)
+
+    return {"expenditures": expenditures}
 
 
 @visualization_router.get("/alert")
@@ -71,9 +82,7 @@ async def get_all_alerts(email: Optional[str] = Query(None)):
 
     # Verifica se o parâmetro email foi passado
     if email is None:
-        raise HTTPException(
-            status_code=400, detail="The 'email' parameter is required."
-        )
+        raise HTTPException(status_code=400, detail=EMAIL_REQUIRED)
 
     # Verifica se o parâmetro email foi passado e se é válido
     if email:
@@ -82,10 +91,7 @@ async def get_all_alerts(email: Optional[str] = Query(None)):
         # Consulta o banco de dados usando o email
         alerts = await get_all_items_from_db("alert", email)
         if not alerts:
-            raise HTTPException(status_code=404, detail="Email not found")
-    else:
-        # Se email não for fornecido, retorna todos os alertas sem filtro
-        alerts = await get_all_items_from_db("alert")
+            raise HTTPException(status_code=404, detail=EMAIL_NOT_FOUND)
 
     return {"alerts": alerts}
 
@@ -101,4 +107,17 @@ async def get_all_reminders(email: Optional[str] = Query(None)):
     Returns:
         List[Dict[str, str]]: A list of reminder entries.
     """
-    return await get_all_items_from_db("reminder", email)
+    # Verifica se o parâmetro email foi passado
+    if email is None:
+        raise HTTPException(status_code=400, detail=EMAIL_REQUIRED)
+
+    # Verifica se o parâmetro email foi passado e se é válido
+    if email:
+        validate_email_format(email)  # Valida o formato do e-mail
+
+        # Consulta o banco de dados usando o email
+        reminders = await get_all_items_from_db("reminder", email)
+        if not reminders:
+            raise HTTPException(status_code=404, detail=EMAIL_NOT_FOUND)
+
+    return {"reminders": reminders}

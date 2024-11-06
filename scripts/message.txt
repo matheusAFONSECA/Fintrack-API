@@ -1,4 +1,5 @@
-test(project): testing route of visualization revenue
+test(project): testing routes of visualization reminder and expenditure
 
 Tests to test the route of visualization 
-revenue, the code is running properly.
+reminder and expenditure, the code is 
+running properly.
