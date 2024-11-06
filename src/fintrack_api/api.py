@@ -6,6 +6,7 @@ from fintrack_api.services.CRUD.read import get_all_items_from_db
 from fastapi import APIRouter, HTTPException, Depends, Query, status
 from fintrack_api.services.CRUD.create import AddItem, add_item_to_db
 from fintrack_api.dependencies import authenticate_user, create_access_token
+from fintrack_api.routes.add_router import add_router
 from fintrack_api.utils.frintrack_api_utils import (
     validate_email_format,
     validate_password_strength,
@@ -91,126 +92,6 @@ async def register_new_user(user: UserIn) -> Dict[str, str]:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error registering user: {str(exc)}",
         )
-
-
-# -------------------- ADD ROUTES -------------------- #
-
-add_router = APIRouter(prefix="/add", tags=["Add"])
-
-
-@add_router.post("/revenue")
-async def add_revenue(item: AddItem):
-    """
-    Add a revenue entry to the database.
-
-    Args:
-        item (AddItem): Data representing the revenue to be added.
-
-    Returns:
-        Dict[str, str]: A message confirming the successful addition.
-    """
-
-    validate_email_format(item.email_id)
-
-    # Validação para existência do e-mail
-    if not email_exists(item.email_id):
-        raise HTTPException(status_code=404, detail="This email does not exist in database.")
-
-    # Validação de data
-    if not item.date:
-        raise HTTPException(status_code=400, detail="The data is obrigatory to send.")
-    
-    # Validação de valor
-    if item.value <= 0:
-        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
-    
-    return await add_item_to_db("revenue", item)
-
-
-@add_router.post("/expenditure")
-async def add_expenditure(item: AddItem):
-    """
-    Add an expenditure entry to the database.
-
-    Args:
-        item (AddItem): Data representing the expenditure to be added.
-
-    Returns:
-        Dict[str, str]: A message confirming the successful addition.
-    """
-
-    validate_email_format(item.email_id)
-
-    # Validação para existência do e-mail
-    if not email_exists(item.email_id):
-        raise HTTPException(status_code=404, detail="This email does not exist in database.")
-
-    # Validação de data
-    if not item.date:
-        raise HTTPException(status_code=400, detail="The data is obrigatory to send.")
-    
-    # Validação de valor
-    if item.value <= 0:
-        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
-    
-    return await add_item_to_db("expenditure", item)
-
-
-@add_router.post("/alert")
-async def add_alert(item: AddItem):
-    """
-    Add an alert entry to the database.
-
-    Args:
-        item (AddItem): Data representing the alert to be added.
-
-    Returns:
-        Dict[str, str]: A message confirming the successful addition.
-    """
-    validate_email_format(item.email_id)
-
-    # Validação para existência do e-mail
-    if not email_exists(item.email_id):
-        raise HTTPException(status_code=404, detail="This email does not exist in database.")
-    
-    # Validação de valor
-    if item.value <= 0:
-        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
-
-    # Validação de data
-    if not item.date:
-        raise HTTPException(status_code=400, detail="A data é obrigatória para o alerta.")
-
-    return await add_item_to_db("alert", item)
-
-
-@add_router.post("/reminder")
-async def add_reminder(item: AddItem):
-    """
-    Add a reminder entry to the database.
-
-    Args:
-        item (AddItem): Data representing the reminder to be added.
-
-    Returns:
-        Dict[str, str]: A message confirming the successful addition.
-    """
-
-    validate_email_format(item.email_id)
-
-    # Validação para existência do e-mail
-    if not email_exists(item.email_id):
-        raise HTTPException(status_code=404, detail="This email does not exist in database.")
-
-    # Validação de data
-    if not item.date:
-        raise HTTPException(status_code=400, detail="A data é obrigatória para o alerta.")
-    
-    # Validação de valor
-    if item.value <= 0:
-        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
-
-    return await add_item_to_db("reminder", item)
 
 
 # -------------------- VISUALIZATION ROUTES -------------------- #

@@ -1,4 +1,6 @@
-test(project): tests for expenditure done
+feat(project): refatoring code
 
-All the tests of expenditure were
-done and they run properly.
+Now the code is 
+been refatoring
+to simplify the
+code.

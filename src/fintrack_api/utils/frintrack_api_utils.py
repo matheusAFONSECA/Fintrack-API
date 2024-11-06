@@ -1,6 +1,7 @@
 import re
 from fastapi import HTTPException
 from passlib.context import CryptContext
+from fintrack_api.services.CRUD.create import AddItem
 from fintrack_api.services.db import connect
 
 # Initialize the bcrypt context for password hashing and verification
@@ -95,3 +96,21 @@ def email_exists(email):
                 return True
             print("No user found.")  # Debug
             return None
+
+def validate_infos(item: AddItem):
+    
+    # Validação para existência do e-mail
+    if not email_exists(item.email_id):
+        raise HTTPException(
+            status_code=404, detail="This email does not exist in database."
+        )
+
+    # Validação de valor
+    if item.value <= 0:
+        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
+
+    # Validação de data
+    if not item.date:
+        raise HTTPException(
+            status_code=400, detail="A data é obrigatória para o alerta."
+        )
