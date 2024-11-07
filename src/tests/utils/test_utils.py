@@ -248,17 +248,18 @@ def update_reminder(params, data):
 
 
 # Helper function to update a revenue entry
-def update_revenue(data):
+def update_revenue(params, data):
     """
     Updates a specific revenue entry.
 
     Args:
-        data (dict): A dictionary with parameters to specify the revenue entry to update.
+        params (dict): A dictionary with parameters to specify the revenue entry to update.
+        data (dict): A dictionary containing the updated data for the revenue.
 
     Returns:
         Response: The response from the API after updating the revenue.
     """
-    return requests.put(f"{BASE_URL}/update/revenue", json=data)
+    return requests.put(f"{BASE_URL}/update/revenue", params=params, json=data)
 
 
 # Helper function to update an expenditure entry

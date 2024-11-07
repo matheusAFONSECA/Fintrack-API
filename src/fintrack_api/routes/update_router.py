@@ -18,9 +18,39 @@ EMAIL_NOT_FOUND = "Email not found"
 
 
 @update_router.put("/revenue")
-async def update_revenue(email: str, updated_data: dict):
-    """Update a revenue entry by email."""
-    return await update_revenue_by_email(email, updated_data)
+async def update_revenue(
+    email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)
+):
+    """
+    Updates a revenue entry by email.
+
+    Parameters:
+        email (str): The email associated with the revenue to update.
+        updated_data (dict): A dictionary containing the updated data fields for the revenue.
+
+    Raises:
+        HTTPException: If the email is not provided, has an invalid format, or does not exist in the database.
+
+    Returns:
+        dict: A dictionary with a success message upon successful update.
+    """
+    # Check if the email parameter is provided
+    if email is None:
+        raise HTTPException(
+            status_code=400, detail="The 'email' parameter is required."
+        )
+
+    # Validate the email format
+    validate_email_format(email)
+
+    # Query the database using the provided email
+    revenues = await get_all_items_from_db("revenue", email)
+    if not revenues:
+        raise HTTPException(status_code=404, detail="Email not found.")
+
+    # Update the revenue entry
+    response = await update_revenue_by_email(email, updated_data)
+    return response
 
 
 @update_router.put("/expenditure")
