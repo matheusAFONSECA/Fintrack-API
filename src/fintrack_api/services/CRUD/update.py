@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from fintrack_api.services.db import connect
+from src.fintrack_api.services.db import connect
 
 
 async def update_revenue_by_email(email: str, updated_data: dict) -> dict:

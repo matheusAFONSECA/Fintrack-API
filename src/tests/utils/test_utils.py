@@ -3,7 +3,7 @@ import string
 import requests
 
 # Base URL for the API
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://fintrack-api.vercel.app"
 
 
 # ---------------------- User Registration and Login Functions ----------------------

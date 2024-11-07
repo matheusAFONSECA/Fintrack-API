@@ -1,8 +1,8 @@
 import re
 from fastapi import HTTPException
 from passlib.context import CryptContext
-from fintrack_api.services.CRUD.create import AddItem
-from fintrack_api.services.db import connect
+from src.fintrack_api.services.CRUD.create import AddItem
+from src.fintrack_api.services.db import connect
 
 # Initialize the bcrypt context for password hashing and verification
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
