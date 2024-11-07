@@ -1,6 +1,11 @@
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import uvicorn
 from fastapi import FastAPI
-from fintrack_api.api import router
+from src.fintrack_api.api import router
 
 # Initialize the FastAPI application
 app = FastAPI()
