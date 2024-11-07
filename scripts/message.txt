@@ -1,5 +1,5 @@
-test(project): routes of delete: expenditure, revenue and reminder
+feat(project): Documentation code
 
-Tests to test the route of delete expenditure, 
-revenue and reminder done. Code is running
-properly.
+The code was documentated
+to make it more easy to
+understanding.

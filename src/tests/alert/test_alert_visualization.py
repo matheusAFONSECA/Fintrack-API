@@ -11,11 +11,14 @@ from tests.utils.test_utils import (
 
 # ------------------------------------------------------------------------------------------------------------
 
-# Testes com o endpoint de visualização de alertas
+# Tests with the alert visualization endpoint
 
 
-# Teste de erro - chave de consulta ausente
+# Error test - missing email query parameter
 def test_alert_visualization_missing_email():
+    """
+    Tests if the visualization endpoint returns a 400 error when the required 'email' parameter is missing.
+    """
     response = requests.get(f"{BASE_URL}/visualization/alert")
     assert (
         response.status_code == 400
@@ -25,8 +28,11 @@ def test_alert_visualization_missing_email():
     assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Teste de erro - e-mail inexistente
+# Error test - nonexistent email
 def test_alert_visualization_nonexistent_email():
+    """
+    Tests if the visualization endpoint returns a 404 error for an email that does not exist in the database.
+    """
     params = {"email": "nonexistent@example.com"}
     response = visualize_alert(params)
     assert (
@@ -37,8 +43,11 @@ def test_alert_visualization_nonexistent_email():
     assert "Email not found" in json_response["detail"]
 
 
-# Teste de erro - formato de e-mail inválido
+# Error test - invalid email format
 def test_alert_visualization_invalid_email_format():
+    """
+    Tests if the visualization endpoint returns a 400 error when the email is not in a valid format.
+    """
     params = {"email": "invalidemailformat"}
     response = visualize_alert(params)
     assert (
@@ -52,9 +61,12 @@ def test_alert_visualization_invalid_email_format():
     )
 
 
-# Teste de sucesso - visualização de alertas com e-mail válido
+# Success test - alert visualization with valid email
 def test_alert_visualization_success():
-    # Registro de um usuário para testar a visualização
+    """
+    Tests if the visualization endpoint successfully returns alerts for a valid registered email.
+    """
+    # Register a user to test alert visualization
     email = generate_random_email()
     register_data = {
         "name": "Test User",
@@ -64,9 +76,9 @@ def test_alert_visualization_success():
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste de visualização de alertas."
+    ), "User registration failed during alert visualization test."
 
-    # Dados de alerta
+    # Add alert data for the registered user
     date = generate_random_date()
     add_alert_data = {
         "email_id": email,
@@ -80,7 +92,7 @@ def test_alert_visualization_success():
         add_alert_response.status_code == 200
     ), f"Expected status 200, got {add_alert_response.status_code}"
 
-    # Chave de visualização válida
+    # Valid visualization key
     params = {"email": email}
     response = visualize_alert(params)
     assert (
@@ -88,13 +100,16 @@ def test_alert_visualization_success():
     ), f"Expected 200 for successful alert visualization, got {response.status_code}"
     json_response = response.json()
     assert "alerts" in json_response
-    # Verifica se o retorno de "alerts" é uma lista (presume-se que a API retorna uma lista de alertas)
+    # Checks if "alerts" in the response is a list (assuming the API returns a list of alerts)
     assert isinstance(json_response["alerts"], list), "Expected alerts to be a list."
 
 
-# Teste de método não permitido
+# Method not allowed test
 @pytest.mark.parametrize("method", ["post", "put", "delete", "patch"])
 def test_alert_visualization_disallowed_methods(method):
+    """
+    Tests if methods other than GET return a 405 error for the alert visualization endpoint.
+    """
     response = getattr(requests, method)(f"{BASE_URL}/visualization/alert")
     assert (
         response.status_code == 405

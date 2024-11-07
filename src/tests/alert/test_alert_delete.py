@@ -11,11 +11,14 @@ from tests.utils.test_utils import (
 
 # ------------------------------------------------------------------------------------------------------------
 
-# Testes com o endpoint de visualização de alertas
+# Tests with the alert deletion endpoint
 
 
-# Teste de erro - chave de consulta ausente
+# Error test - missing email query parameter
 def test_alert_delete_missing_email():
+    """
+    Tests if the delete endpoint returns a 400 error when the required 'email' parameter is missing.
+    """
     response = requests.delete(f"{BASE_URL}/delete/alert")
     assert (
         response.status_code == 400
@@ -25,8 +28,11 @@ def test_alert_delete_missing_email():
     assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Teste de erro - e-mail inexistente
+# Error test - nonexistent email
 def test_alert_delete_nonexistent_email():
+    """
+    Tests if the delete endpoint returns a 404 error for an email that does not exist in the database.
+    """
     params = {"email": "nonexistent@example.com"}
     response = delete_alert(params)
     assert (
@@ -37,8 +43,11 @@ def test_alert_delete_nonexistent_email():
     assert "Email not found" in json_response["detail"]
 
 
-# Teste de erro - formato de e-mail inválido
+# Error test - invalid email format
 def test_alert_delete_invalid_email_format():
+    """
+    Tests if the delete endpoint returns a 400 error when the email is not in a valid format.
+    """
     params = {"email": "invalidemailformat"}
     response = delete_alert(params)
     assert (
@@ -52,9 +61,12 @@ def test_alert_delete_invalid_email_format():
     )
 
 
-# Teste de sucesso - visualização de alertas com e-mail válido
+# Success test - delete alert with valid email
 def test_alert_delete_success():
-    # Registro de um usuário para testar a visualização
+    """
+    Tests if the delete endpoint successfully deletes an alert for a valid registered email.
+    """
+    # Register a user to test alert deletion
     email = generate_random_email()
     register_data = {
         "name": "Test User",
@@ -64,9 +76,9 @@ def test_alert_delete_success():
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste deletar alertas."
+    ), "User registration failed during alert deletion test."
 
-    # Dados de alerta
+    # Add alert data for the registered user
     date = generate_random_date()
     add_alert_data = {
         "email_id": email,
@@ -80,7 +92,7 @@ def test_alert_delete_success():
         add_alert_response.status_code == 200
     ), f"Expected status 200, got {add_alert_response.status_code}"
 
-    # Chave para deletar válida
+    # Valid delete key
     params = {"email": email}
     response = delete_alert(params)
     assert (
@@ -88,15 +100,15 @@ def test_alert_delete_success():
     ), f"Expected 200 for successful alert deletion, got {response.status_code}"
     json_response = response.json()
     assert "message" in json_response
-    assert (
-        "Alert deleted successfully."
-        in json_response["message"]
-    )
+    assert "Alert deleted successfully." in json_response["message"]
 
 
-# Teste de método não permitido
+# Method not allowed test
 @pytest.mark.parametrize("method", ["post", "put", "get", "patch"])
 def test_alert_delete_disallowed_methods(method):
+    """
+    Tests if methods other than DELETE return a 405 error for the alert deletion endpoint.
+    """
     response = getattr(requests, method)(f"{BASE_URL}/delete/alert")
     assert (
         response.status_code == 405

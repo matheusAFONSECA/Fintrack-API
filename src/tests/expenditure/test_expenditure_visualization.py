@@ -11,11 +11,14 @@ from tests.utils.test_utils import (
 
 # ------------------------------------------------------------------------------------------------------------
 
-# Testes com o endpoint de visualização de despesas
+# Tests for the expenditure visualization endpoint
 
 
-# Teste de erro - chave de consulta ausente
 def test_expenditure_visualization_missing_email():
+    """
+    Test that the API returns a 400 status code if the 'email' parameter is missing
+    when trying to visualize expenditures.
+    """
     response = requests.get(f"{BASE_URL}/visualization/expenditure")
     assert (
         response.status_code == 400
@@ -25,8 +28,11 @@ def test_expenditure_visualization_missing_email():
     assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Teste de erro - e-mail inexistente
 def test_expenditure_visualization_nonexistent_email():
+    """
+    Test that the API returns a 404 status code if an attempt is made to visualize expenditures
+    with a non-existent email.
+    """
     params = {"email": "nonexistent@example.com"}
     response = visualize_expenditure(params)
     assert (
@@ -37,8 +43,11 @@ def test_expenditure_visualization_nonexistent_email():
     assert "Email not found" in json_response["detail"]
 
 
-# Teste de erro - formato de e-mail inválido
 def test_expenditure_visualization_invalid_email_format():
+    """
+    Test that the API returns a 400 status code if an invalid email format is provided
+    when attempting to visualize expenditures.
+    """
     params = {"email": "invalidemailformat"}
     response = visualize_expenditure(params)
     assert (
@@ -52,27 +61,29 @@ def test_expenditure_visualization_invalid_email_format():
     )
 
 
-# Teste de sucesso - visualização de despesas com e-mail válido
 def test_expenditure_visualization_success():
-    # Registro de um usuário para testar a visualização
+    """
+    Test successful visualization of expenditures after registering a user and adding expenditure data.
+    """
+    # Register a user to test expenditure visualization
     email = generate_random_email()
     register_data = {
         "name": "Test User",
         "email": email,
-        "password": "senha123",
+        "password": "password123",
     }
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste de visualização."
+    ), "User registration failed during expenditure visualization test."
 
-    # Dados de despesa
+    # Add expenditure data for visualization
     date = generate_random_date()
     data = {
         "email_id": email,
-        "item_type": "Supermercado",
+        "item_type": "Supermarket",
         "value": 200.00,
-        "annotation": "Compra de outubro",
+        "annotation": "October purchase",
         "date": date,
     }
     response = add_expenditure(data)
@@ -81,7 +92,7 @@ def test_expenditure_visualization_success():
     assert "message" in json_response
     assert "Expenditure added successfully" in json_response["message"]
 
-    # Chave de visualização válida
+    # Valid email key for visualization
     params = {"email": email}
     response = visualize_expenditure(params)
     assert (
@@ -89,15 +100,18 @@ def test_expenditure_visualization_success():
     ), f"Expected 200 for successful expenditures visualization, got {response.status_code}"
     json_response = response.json()
     assert "expenditures" in json_response
-    # Verifica se o retorno de "expenditure" é uma lista (presume-se que a API retorna uma lista de expenditures)
+    # Check that "expenditures" is a list (assumes the API returns a list of expenditures)
     assert isinstance(
         json_response["expenditures"], list
     ), "Expected expenditures to be a list."
 
 
-# Teste de método não permitido
 @pytest.mark.parametrize("method", ["post", "put", "delete", "patch"])
 def test_expenditure_visualization_disallowed_methods(method):
+    """
+    Test that the API returns a 405 status code for HTTP methods that are not allowed for the
+    expenditure visualization endpoint.
+    """
     response = getattr(requests, method)(f"{BASE_URL}/visualization/expenditure")
     assert (
         response.status_code == 405

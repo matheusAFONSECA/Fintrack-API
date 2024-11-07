@@ -68,7 +68,7 @@ def validate_email_format(email: str) -> None:
             status_code=400,
             detail="The email must be in the format 'name@domain.com' or 'name@domain.br'.",
         )
-    
+
 
 def email_exists(email):
     """
@@ -97,20 +97,31 @@ def email_exists(email):
             print("No user found.")  # Debug
             return None
 
+
 def validate_infos(item: AddItem):
-    
-    # Validação para existência do e-mail
+    """
+    Validates the information in an AddItem object before processing.
+
+    Args:
+        item (AddItem): An object containing item information to be validated.
+
+    Raises:
+        HTTPException: If any validation fails, an HTTPException is raised with a specific error message.
+    """
+    # Validate the existence of the email
     if not email_exists(item.email_id):
         raise HTTPException(
-            status_code=404, detail="This email does not exist in database."
+            status_code=404, detail="This email does not exist in the database."
         )
 
-    # Validação de valor
+    # Validate the value
     if item.value <= 0:
-        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
+        raise HTTPException(
+            status_code=400, detail="The value must be greater than zero."
+        )
 
-    # Validação de data
+    # Validate the date
     if not item.date:
         raise HTTPException(
-            status_code=400, detail="A data é obrigatória para o alerta."
+            status_code=400, detail="The date is required for the alert."
         )

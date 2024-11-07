@@ -11,11 +11,13 @@ from tests.utils.test_utils import (
 
 # ------------------------------------------------------------------------------------------------------------
 
-# Testes com o endpoint de visualização de receitas
+# Tests for the expenditure deletion endpoint
 
 
-# Teste de erro - chave de consulta ausente
 def test_expenditure_delete_missing_email():
+    """
+    Test that the API returns a 400 status code if the 'email' parameter is missing when trying to delete an expenditure.
+    """
     response = requests.delete(f"{BASE_URL}/delete/expenditure")
     assert (
         response.status_code == 400
@@ -25,8 +27,10 @@ def test_expenditure_delete_missing_email():
     assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Teste de erro - e-mail inexistente
 def test_expenditure_delete_nonexistent_email():
+    """
+    Test that the API returns a 404 status code if an attempt is made to delete an expenditure with a non-existent email.
+    """
     params = {"email": "nonexistent@example.com"}
     response = delete_expenditure(params)
     assert (
@@ -37,8 +41,10 @@ def test_expenditure_delete_nonexistent_email():
     assert "Email not found" in json_response["detail"]
 
 
-# Teste de erro - formato de e-mail inválido
 def test_expenditure_delete_invalid_email_format():
+    """
+    Test that the API returns a 400 status code if an invalid email format is provided when attempting to delete an expenditure.
+    """
     params = {"email": "invalidemailformat"}
     response = delete_expenditure(params)
     assert (
@@ -52,9 +58,11 @@ def test_expenditure_delete_invalid_email_format():
     )
 
 
-# Teste de sucesso - visualização de alertas com e-mail válido
 def test_expenditure_delete_success():
-    # Registro de um usuário para testar a visualização
+    """
+    Test successful deletion of an expenditure after registering a user and adding an expenditure entry.
+    """
+    # Register a user to test deletion of expenditures
     email = generate_random_email()
     register_data = {
         "name": "Test User",
@@ -64,15 +72,15 @@ def test_expenditure_delete_success():
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste deletar alertas."
+    ), "User registration failed during expenditure deletion test."
 
-    # Dados de despesa
+    # Add expenditure data for deletion
     date = generate_random_date()
     data = {
         "email_id": email,
-        "item_type": "Supermercado",
+        "item_type": "Supermarket",
         "value": 200.00,
-        "annotation": "Compra de outubro",
+        "annotation": "October purchase",
         "date": date,
     }
     response = add_expenditure(data)
@@ -81,20 +89,22 @@ def test_expenditure_delete_success():
     assert "message" in json_response
     assert "Expenditure added successfully" in json_response["message"]
 
-    # Chave para deletar válida
+    # Valid email key for deletion
     params = {"email": email}
     response = delete_expenditure(params)
     assert (
         response.status_code == 200
-    ), f"Expected 200 for successful revenue deletion, got {response.status_code}"
+    ), f"Expected 200 for successful expenditure deletion, got {response.status_code}"
     json_response = response.json()
     assert "message" in json_response
     assert "Expenditure deleted successfully." in json_response["message"]
 
 
-# Teste de método não permitido
 @pytest.mark.parametrize("method", ["post", "put", "get", "patch"])
 def test_expenditure_delete_disallowed_methods(method):
+    """
+    Test that the API returns a 405 status code for HTTP methods that are not allowed for the delete expenditure endpoint.
+    """
     response = getattr(requests, method)(f"{BASE_URL}/delete/expenditure")
     assert (
         response.status_code == 405

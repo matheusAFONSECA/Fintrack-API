@@ -11,11 +11,12 @@ from tests.utils.test_utils import (
 
 # ------------------------------------------------------------------------------------------------------------
 
-# Testes com o endpoint de visualização de receitas
+# Tests for the revenue visualization endpoint
 
 
-# Teste de erro - chave de consulta ausente
+# Error test - missing email query parameter
 def test_revenue_visualization_missing_email():
+    # Test if the server responds with 400 when the 'email' parameter is missing
     response = requests.get(f"{BASE_URL}/visualization/revenue")
     assert (
         response.status_code == 400
@@ -25,8 +26,9 @@ def test_revenue_visualization_missing_email():
     assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Teste de erro - e-mail inexistente
+# Error test - nonexistent email
 def test_revenue_visualization_nonexistent_email():
+    # Test if the server responds with 404 when the provided email does not exist
     params = {"email": "nonexistent@example.com"}
     response = visualize_revenue(params)
     assert (
@@ -37,8 +39,9 @@ def test_revenue_visualization_nonexistent_email():
     assert "Email not found" in json_response["detail"]
 
 
-# Teste de erro - formato de e-mail inválido
+# Error test - invalid email format
 def test_revenue_visualization_invalid_email_format():
+    # Test if the server responds with 400 when the email format is invalid
     params = {"email": "invalidemailformat"}
     response = visualize_revenue(params)
     assert (
@@ -52,9 +55,9 @@ def test_revenue_visualization_invalid_email_format():
     )
 
 
-# Teste de sucesso - visualização de receitas com e-mail válido
+# Success test - revenue visualization with a valid email
 def test_revenue_visualization_success():
-    # Registro de um usuário para testar a visualização
+    # Register a user to test the revenue visualization
     email = generate_random_email()
     register_data = {
         "name": "Test User",
@@ -64,9 +67,9 @@ def test_revenue_visualization_success():
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste de visualização."
+    ), "Registration failed during the visualization test."
 
-    # Dados de receita
+    # Add revenue data
     date = generate_random_date()
     data = {
         "email_id": email,
@@ -81,7 +84,7 @@ def test_revenue_visualization_success():
     assert "message" in json_response
     assert "Revenue added successfully" in json_response["message"]
 
-    # Chave de visualização válida
+    # Valid email for visualization
     params = {"email": email}
     response = visualize_revenue(params)
     assert (
@@ -89,15 +92,16 @@ def test_revenue_visualization_success():
     ), f"Expected 200 for successful revenue visualization, got {response.status_code}"
     json_response = response.json()
     assert "revenues" in json_response
-    # Verifica se o retorno de "revenues" é uma lista (presume-se que a API retorna uma lista de receitas)
+    # Check if the 'revenues' field is a list (it is assumed that the API returns a list of revenues)
     assert isinstance(
         json_response["revenues"], list
     ), "Expected revenues to be a list."
 
 
-# Teste de método não permitido
+# Test for disallowed HTTP methods
 @pytest.mark.parametrize("method", ["post", "put", "delete", "patch"])
 def test_revenue_visualization_disallowed_methods(method):
+    # Test if the server responds with 405 for disallowed HTTP methods
     response = getattr(requests, method)(f"{BASE_URL}/visualization/revenue")
     assert (
         response.status_code == 405

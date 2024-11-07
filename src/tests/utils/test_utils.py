@@ -2,103 +2,242 @@ import random
 import string
 import requests
 
-# URL base da API
+# Base URL for the API
 BASE_URL = "http://localhost:8000"
 
-# ---------------------- Funções de registro e login ----------------------
+
+# ---------------------- User Registration and Login Functions ----------------------
 
 
-# Função auxiliar para registro de usuário
+# Helper function for user registration
 def register_user(data):
+    """
+    Registers a new user with the provided data.
+
+    Args:
+        data (dict): A dictionary with user information for registration.
+
+    Returns:
+        Response: The response from the API after attempting registration.
+    """
     return requests.post(f"{BASE_URL}/user/register", json=data)
 
 
-# Função auxiliar para login do usuário
+# Helper function for user login
 def login_user(data):
+    """
+    Logs in a user with the provided data.
+
+    Args:
+        data (dict): A dictionary with user credentials for login.
+
+    Returns:
+        Response: The response from the API after attempting login.
+    """
     return requests.post(f"{BASE_URL}/user/login", data=data)
 
 
-# ---------------------- Funções de adição ----------------------
+# ---------------------- Add Functions ----------------------
 
 
-# Função auxliar para adicionar um novo alerta
+# Helper function to add a new alert
 def add_alert(data):
+    """
+    Adds a new alert with the provided data.
+
+    Args:
+        data (dict): A dictionary containing the alert information.
+
+    Returns:
+        Response: The response from the API after adding the alert.
+    """
     return requests.post(f"{BASE_URL}/add/alert", json=data)
 
 
-# Função auxiliar para adicionar um novo lembrete
+# Helper function to add a new reminder
 def add_reminder(data):
+    """
+    Adds a new reminder with the provided data.
+
+    Args:
+        data (dict): A dictionary containing the reminder information.
+
+    Returns:
+        Response: The response from the API after adding the reminder.
+    """
     return requests.post(f"{BASE_URL}/add/reminder", json=data)
 
 
-# Função auxiliar para adicionar uma nova receita
+# Helper function to add a new revenue
 def add_revenue(data):
+    """
+    Adds a new revenue entry with the provided data.
+
+    Args:
+        data (dict): A dictionary containing the revenue information.
+
+    Returns:
+        Response: The response from the API after adding the revenue.
+    """
     return requests.post(f"{BASE_URL}/add/revenue", json=data)
 
 
-# ---------------------- Funções de visualização ----------------------
+# ---------------------- Visualization Functions ----------------------
 
 
-# Função auxiliar para adicionar uma nova despesa
+# Helper function to add a new expenditure
 def add_expenditure(data):
+    """
+    Adds a new expenditure entry with the provided data.
+
+    Args:
+        data (dict): A dictionary containing the expenditure information.
+
+    Returns:
+        Response: The response from the API after adding the expenditure.
+    """
     return requests.post(f"{BASE_URL}/add/expenditure", json=data)
 
 
-# Função auxiliar para visualizar um alerta
+# Helper function to view an alert
 def visualize_alert(data):
+    """
+    Retrieves the details of a specific alert.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the alert.
+
+    Returns:
+        Response: The response from the API with alert details.
+    """
     return requests.get(f"{BASE_URL}/visualization/alert", params=data)
 
 
-# Função auxiliar para visualizar uma receita
+# Helper function to view a revenue entry
 def visualize_revenue(data):
+    """
+    Retrieves the details of a specific revenue entry.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the revenue entry.
+
+    Returns:
+        Response: The response from the API with revenue details.
+    """
     return requests.get(f"{BASE_URL}/visualization/revenue", params=data)
 
 
-# Função auxiliar para visualizar um lembrete
+# Helper function to view a reminder
 def visualize_reminder(data):
+    """
+    Retrieves the details of a specific reminder.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the reminder.
+
+    Returns:
+        Response: The response from the API with reminder details.
+    """
     return requests.get(f"{BASE_URL}/visualization/reminder", params=data)
 
 
-# Função auxiliar para visualizar uma despesa
+# Helper function to view an expenditure entry
 def visualize_expenditure(data):
+    """
+    Retrieves the details of a specific expenditure entry.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the expenditure entry.
+
+    Returns:
+        Response: The response from the API with expenditure details.
+    """
     return requests.get(f"{BASE_URL}/visualization/expenditure", params=data)
 
 
-# ---------------------- Funções de exclusão ----------------------
+# ---------------------- Deletion Functions ----------------------
 
 
-# Função auxiliar para deletar um alerta
+# Helper function to delete an alert
 def delete_alert(data):
+    """
+    Deletes a specific alert.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the alert to delete.
+
+    Returns:
+        Response: The response from the API after deleting the alert.
+    """
     return requests.delete(f"{BASE_URL}/delete/alert", params=data)
 
 
-# Função auxiliar para deletar um lembrete
+# Helper function to delete a reminder
 def delete_reminder(data):
+    """
+    Deletes a specific reminder.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the reminder to delete.
+
+    Returns:
+        Response: The response from the API after deleting the reminder.
+    """
     return requests.delete(f"{BASE_URL}/delete/reminder", params=data)
 
 
-# Função auxiliar para deletar uma receita
+# Helper function to delete a revenue entry
 def delete_revenue(data):
+    """
+    Deletes a specific revenue entry.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the revenue entry to delete.
+
+    Returns:
+        Response: The response from the API after deleting the revenue.
+    """
     return requests.delete(f"{BASE_URL}/delete/revenue", params=data)
 
 
-# Função auxiliar para deletar uma despesa
+# Helper function to delete an expenditure entry
 def delete_expenditure(data):
+    """
+    Deletes a specific expenditure entry.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the expenditure entry to delete.
+
+    Returns:
+        Response: The response from the API after deleting the expenditure.
+    """
     return requests.delete(f"{BASE_URL}/delete/expenditure", params=data)
 
 
-# ---------------------- Funções auxiliares ----------------------
+# ---------------------- Auxiliary Functions ----------------------
 
 
-# Função auxiliar para gerar um e-mail aleatório
+# Helper function to generate a random email
 def generate_random_email():
+    """
+    Generates a random email for testing purposes.
+
+    Returns:
+        str: A randomly generated email address.
+    """
     random_str = "".join(random.choices(string.ascii_lowercase + string.digits, k=10))
     return f"{random_str}@gmail.com"
 
 
-# Função auxiliar para gerar uma data aleatória
+# Helper function to generate a random date
 def generate_random_date():
+    """
+    Generates a random date for testing purposes.
+
+    Returns:
+        str: A randomly generated date in the format 'YYYY-MM-DD'.
+    """
     random_day = random.randint(1, 28)
     random_month = random.randint(1, 12)
     random_year = random.randint(1900, 2021)
-    return f"{random_year}-{random_month}-{random_day}"
+    return f"{random_year}-{random_month:02d}-{random_day:02d}"

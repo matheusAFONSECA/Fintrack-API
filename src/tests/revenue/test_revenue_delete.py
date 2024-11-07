@@ -11,11 +11,12 @@ from tests.utils.test_utils import (
 
 # ------------------------------------------------------------------------------------------------------------
 
-# Testes com o endpoint de visualização de alertas
+# Tests for the revenue deletion endpoint
 
 
-# Teste de erro - chave de consulta ausente
+# Error test - missing email query parameter
 def test_revenue_delete_missing_email():
+    # Test if the server responds with 400 when the 'email' parameter is missing
     response = requests.delete(f"{BASE_URL}/delete/revenue")
     assert (
         response.status_code == 400
@@ -25,8 +26,9 @@ def test_revenue_delete_missing_email():
     assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Teste de erro - e-mail inexistente
+# Error test - nonexistent email
 def test_revenue_delete_nonexistent_email():
+    # Test if the server responds with 404 when the provided email does not exist
     params = {"email": "nonexistent@example.com"}
     response = delete_revenue(params)
     assert (
@@ -37,8 +39,9 @@ def test_revenue_delete_nonexistent_email():
     assert "Email not found" in json_response["detail"]
 
 
-# Teste de erro - formato de e-mail inválido
+# Error test - invalid email format
 def test_revenue_delete_invalid_email_format():
+    # Test if the server responds with 400 when the email format is invalid
     params = {"email": "invalidemailformat"}
     response = delete_revenue(params)
     assert (
@@ -52,9 +55,9 @@ def test_revenue_delete_invalid_email_format():
     )
 
 
-# Teste de sucesso - visualização de alertas com e-mail válido
+# Success test - revenue deletion with valid email
 def test_revenue_delete_success():
-    # Registro de um usuário para testar a visualização
+    # Register a user to test the revenue deletion
     email = generate_random_email()
     register_data = {
         "name": "Test User",
@@ -64,9 +67,9 @@ def test_revenue_delete_success():
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste deletar alertas."
+    ), "Registration failed during the revenue deletion test."
 
-    # Dados de receita
+    # Add a revenue entry
     date = generate_random_date()
     data = {
         "email_id": email,
@@ -81,7 +84,7 @@ def test_revenue_delete_success():
     assert "message" in json_response
     assert "Revenue added successfully" in json_response["message"]
 
-    # Chave para deletar válida
+    # Valid email to delete revenue
     params = {"email": email}
     response = delete_revenue(params)
     assert (
@@ -89,15 +92,13 @@ def test_revenue_delete_success():
     ), f"Expected 200 for successful revenue deletion, got {response.status_code}"
     json_response = response.json()
     assert "message" in json_response
-    assert (
-        "Revenue deleted successfully."
-        in json_response["message"]
-    )
+    assert "Revenue deleted successfully." in json_response["message"]
 
 
-# Teste de método não permitido
+# Test for disallowed HTTP methods
 @pytest.mark.parametrize("method", ["post", "put", "get", "patch"])
 def test_revenue_delete_disallowed_methods(method):
+    # Test if the server responds with 405 for disallowed HTTP methods
     response = getattr(requests, method)(f"{BASE_URL}/delete/revenue")
     assert (
         response.status_code == 405

@@ -8,12 +8,12 @@ from tests.utils.test_utils import (
 )
 
 
-# Testes com o endpoint de login de usuário
+# Tests for the user login endpoint
 
 
-# Teste de sucesso - login válido
+# Success test - valid login
 def test_login_success():
-    # Registro de um usuário para testar o login
+    # Register a user to test the login functionality
     email = generate_random_email()
     register_data = {
         "name": "Test User",
@@ -23,9 +23,9 @@ def test_login_success():
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste de login."
+    ), "Registration failed during the login test."
 
-    # Dados de login
+    # Login data
     login_data = {
         "username": email,
         "password": "senha123",
@@ -35,7 +35,7 @@ def test_login_success():
         login_response.status_code == 200
     ), f"Expected status 200, got {login_response.status_code}"
 
-    # Verifica se o token de acesso foi retornado com sucesso
+    # Verify that the access token was returned successfully
     json_response = login_response.json()
     assert "access_token" in json_response, "Access token not found in response"
     assert (
@@ -43,7 +43,7 @@ def test_login_success():
     ), f"Expected token type 'bearer', got {json_response['token_type']}"
 
 
-# Teste de erro - senha incorreta
+# Error test - incorrect password
 def test_login_invalid_password():
     email = generate_random_email()
     register_data = {
@@ -54,7 +54,7 @@ def test_login_invalid_password():
     register_response = register_user(register_data)
     assert register_response.status_code == 200
 
-    # Tenta fazer login com uma senha incorreta
+    # Attempt to login with an incorrect password
     login_data = {
         "username": email,
         "password": "senha_errada",
@@ -68,10 +68,11 @@ def test_login_invalid_password():
     assert json_response["detail"] == "Incorrect email or password"
 
 
-# Teste de erro - usuário não registrado
+# Error test - unregistered user
 def test_login_unregistered_user():
+    # Generate a random email to ensure it is not registered
     login_data = {
-        "username": generate_random_email(),  # Gera um e-mail aleatório para garantir que não está registrado
+        "username": generate_random_email(),
         "password": "senha123",
     }
     login_response = login_user(login_data)
@@ -83,7 +84,7 @@ def test_login_unregistered_user():
     assert json_response["detail"] == "Incorrect email or password"
 
 
-# Teste de erro - dados faltando (sem senha)
+# Error test - missing data (no password)
 def test_login_missing_password():
     email = generate_random_email()
     register_data = {
@@ -94,7 +95,7 @@ def test_login_missing_password():
     register_response = register_user(register_data)
     assert register_response.status_code == 200
 
-    # Tenta fazer login sem senha
+    # Attempt to login without providing a password
     login_data = {
         "username": email,
     }
@@ -108,9 +109,10 @@ def test_login_missing_password():
     assert json_response["detail"][0]["loc"] == ["body", "password"]
 
 
-# Tests de métodos não permitidos
+# Test for disallowed HTTP methods
 @pytest.mark.parametrize("method", ["get", "put", "delete", "patch"])
 def test_register_disallowed_methods(method):
+    # Test if the server responds with 405 for disallowed HTTP methods
     response = getattr(requests, method)(f"{BASE_URL}/user/login")
     assert (
         response.status_code == 405

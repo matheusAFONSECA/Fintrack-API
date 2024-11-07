@@ -11,12 +11,13 @@ from tests.utils.test_utils import (
 
 # ------------------------------------------------------------------------------------------------------------
 
-# Testes com o endpoint de visualização de lembretess
+# Tests for the reminder deletion endpoint
 
 
-# Teste de erro - chave de consulta ausente
+# Error test - missing email parameter in the query
 def test_reminder_delete_missing_email():
     response = requests.delete(f"{BASE_URL}/delete/reminder")
+    # Expecting a 400 status code for missing email parameter
     assert (
         response.status_code == 400
     ), f"Expected 400 for missing email parameter, got {response.status_code}"
@@ -25,10 +26,11 @@ def test_reminder_delete_missing_email():
     assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Teste de erro - e-mail inexistente
+# Error test - non-existent email
 def test_reminder_delete_nonexistent_email():
     params = {"email": "nonexistent@example.com"}
     response = delete_reminder(params)
+    # Expecting a 404 status code when the email doesn't exist
     assert (
         response.status_code == 404
     ), f"Expected 404 for nonexistent email, got {response.status_code}"
@@ -37,10 +39,11 @@ def test_reminder_delete_nonexistent_email():
     assert "Email not found" in json_response["detail"]
 
 
-# Teste de erro - formato de e-mail inválido
+# Error test - invalid email format
 def test_reminder_delete_invalid_email_format():
     params = {"email": "invalidemailformat"}
     response = delete_reminder(params)
+    # Expecting a 400 status code for invalid email format
     assert (
         response.status_code == 400
     ), f"Expected 400 for invalid email format, got {response.status_code}"
@@ -52,9 +55,9 @@ def test_reminder_delete_invalid_email_format():
     )
 
 
-# Teste de sucesso - visualização de alertas com e-mail válido
+# Success test - deleting reminder with a valid email
 def test_reminder_delete_success():
-    # Registro de um usuário para testar a visualização
+    # Register a user to test reminder deletion
     email = generate_random_email()
     register_data = {
         "name": "Test User",
@@ -64,16 +67,16 @@ def test_reminder_delete_success():
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registro falhou durante o teste deletar alertas."
+    ), "Registration failed during the delete reminder test."
 
-    # Dados de lembrete
+    # Reminder data to be added
     date = generate_random_date()
     data = {
         "email_id": email,
-        "item_type": "Pagamento de Empréstimo",
+        "item_type": "Loan Payment",
         "value": 500.00,
-        "annotation": "Parcela de outubro",
-        "date": date
+        "annotation": "October installment",
+        "date": date,
     }
     response = add_reminder(data)
     assert response.status_code == 200, f"Expected 200, got {response.status_code}"
@@ -81,24 +84,23 @@ def test_reminder_delete_success():
     assert "message" in json_response
     assert "Reminder added successfully" in json_response["message"]
 
-    # Chave para deletar válida
+    # Valid key for deletion
     params = {"email": email}
     response = delete_reminder(params)
+    # Expecting a 200 status code for successful reminder deletion
     assert (
         response.status_code == 200
     ), f"Expected 200 for successful revenue deletion, got {response.status_code}"
     json_response = response.json()
     assert "message" in json_response
-    assert (
-        "Reminder deleted successfully."
-        in json_response["message"]
-    )
+    assert "Reminder deleted successfully." in json_response["message"]
 
 
-# Teste de método não permitido
+# Test for disallowed methods (POST, PUT, GET, PATCH)
 @pytest.mark.parametrize("method", ["post", "put", "get", "patch"])
 def test_reminder_delete_disallowed_methods(method):
     response = getattr(requests, method)(f"{BASE_URL}/delete/reminder")
+    # Expecting a 405 status code for disallowed methods
     assert (
         response.status_code == 405
     ), f"Expected 405 for {method.upper()}, got {response.status_code}"
