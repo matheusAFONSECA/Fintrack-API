@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+from fastapi import APIRouter, HTTPException, Query, Body
 from fintrack_api.services.CRUD.read import get_all_items_from_db
 from fintrack_api.services.CRUD.update import (
     update_revenue_by_email,
@@ -23,13 +24,41 @@ async def update_revenue(email: str, updated_data: dict):
 
 
 @update_router.put("/expenditure")
-async def update_expenditure(email: str, updated_data: dict):
-    """Update an expenditure entry by email."""
-    return await update_expenditure_by_email(email, updated_data)
+async def update_expenditure(email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)):
+    """
+    Updates an expenditure entry by email.
+
+    Parameters:
+        email (str): The email associated with the expenditure to update.
+        updated_data (dict): A dictionary containing the updated data fields for the expenditure.
+
+    Raises:
+        HTTPException: If the email is not provided, has an invalid format, or does not exist in the database.
+
+    Returns:
+        dict: A dictionary with a success message upon successful update.
+    """
+    # Check if the email parameter is provided
+    if email is None:
+        raise HTTPException(status_code=400, detail=EMAIL_REQUIRED)
+
+    # Validate the email format and check if there are matching entries in the database
+    if email:
+        validate_email_format(email)
+
+        # Query the database using the provided email
+        expenditures = await get_all_items_from_db("expenditure", email)
+        if not expenditures:
+            raise HTTPException(status_code=404, detail=EMAIL_NOT_FOUND)
+
+        # Update the expenditure entry
+        response = await update_expenditure_by_email(email, updated_data)
+
+    return response
 
 
 @update_router.put("/alert")
-async def update_alert(email: str, updated_data: dict):
+async def update_alert(email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)):
     """
     Updates an alert entry by email.
 

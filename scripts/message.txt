@@ -1,5 +1,5 @@
-test(update_alert): Create update tests
+test(update_expenditure): Create update tests
 
-Seven update tests were created,
+eight update tests were created,
 along with the creation of update
 functions for the others.

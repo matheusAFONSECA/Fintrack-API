@@ -260,17 +260,18 @@ def update_revenue(data):
 
 
 # Helper function to update an expenditure entry
-def update_expenditure(data):
+def update_expenditure(params, data):
     """
     Updates a specific expenditure entry.
 
     Args:
-        data (dict): A dictionary with parameters to specify the expenditure entry to update.
+        params (dict): A dictionary with parameters to specify the expenditure entry to update.
+        data (dict): A dictionary containing the updated data for the expenditure.
 
     Returns:
         Response: The response from the API after updating the expenditure.
     """
-    return requests.put(f"{BASE_URL}/update/expenditure", json=data)
+    return requests.put(f"{BASE_URL}/update/expenditure", params=params, json=data)
 
 
 # ---------------------- Auxiliary Functions ----------------------
