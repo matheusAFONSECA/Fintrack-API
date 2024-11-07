@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from fintrack_api.routes.add_router import add_router
-from fintrack_api.routes.user_router import user_router
-from fintrack_api.routes.update_router import update_router
-from fintrack_api.routes.delete_router import delete_router
-from fintrack_api.routes.visualization_router import visualization_router
+from src.fintrack_api.routes.add_router import add_router
+from src.fintrack_api.routes.user_router import user_router
+from src.fintrack_api.routes.update_router import update_router
+from src.fintrack_api.routes.delete_router import delete_router
+from src.fintrack_api.routes.visualization_router import visualization_router
 
 router = APIRouter()
 

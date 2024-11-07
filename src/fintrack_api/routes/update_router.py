@@ -1,13 +1,13 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Query, Body
-from fintrack_api.services.CRUD.read import get_all_items_from_db
-from fintrack_api.services.CRUD.update import (
+from src.fintrack_api.services.CRUD.read import get_all_items_from_db
+from src.fintrack_api.services.CRUD.update import (
     update_revenue_by_email,
     update_expenditure_by_email,
     update_alert_by_email,
     update_reminder_by_email,
 )
-from fintrack_api.utils.frintrack_api_utils import validate_email_format
+from src.fintrack_api.utils.frintrack_api_utils import validate_email_format
 
 # -------------------- UPDATE ROUTES -------------------- #
 

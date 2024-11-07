@@ -1,10 +1,10 @@
 from typing import Dict
-from fintrack_api.models.userModels import UserIn
-from fintrack_api.services.CRUD import create_user
+from src.fintrack_api.models.userModels import UserIn
+from src.fintrack_api.services.CRUD import create_user
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, HTTPException, Depends, status
-from fintrack_api.dependencies import authenticate_user, create_access_token
-from fintrack_api.utils.frintrack_api_utils import (
+from src.fintrack_api.dependencies import authenticate_user, create_access_token
+from src.fintrack_api.utils.frintrack_api_utils import (
     validate_email_format,
     validate_password_strength,
 )

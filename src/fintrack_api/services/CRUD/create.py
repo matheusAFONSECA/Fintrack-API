@@ -1,8 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel
 from fastapi import HTTPException
-from fintrack_api.services.db import connect
-from fintrack_api.models.userModels import UserIn
+from src.fintrack_api.services.db import connect
+from src.fintrack_api.models.userModels import UserIn
 
 
 class AddItem(BaseModel):

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from fintrack_api.services.CRUD.create import AddItem, add_item_to_db
-from fintrack_api.utils.frintrack_api_utils import validate_email_format, validate_infos
+from src.fintrack_api.services.CRUD.create import AddItem, add_item_to_db
+from src.fintrack_api.utils.frintrack_api_utils import validate_email_format, validate_infos
 
 # -------------------- ADD ROUTES -------------------- #
 
