@@ -1,7 +1,7 @@
-from typing import List, Optional
 from fastapi import HTTPException
-from src.fintrack_api.services.db import connect
-from src.fintrack_api.models.userModels import UserOut, UserInDB
+from typing import Dict, List, Optional
+from fintrack_api.services.db import connect
+from fintrack_api.models.userModels import UserOut, UserInDB
 
 
 async def get_all_users() -> Optional[List[UserOut]]:
@@ -57,7 +57,6 @@ async def get_user_by_email_for_auth(email: str) -> Optional[UserInDB]:
         FROM "user" u
         WHERE u.email = %(email)s;
     """
-    print(f"Executing query for email: {email}")  # Debug
 
     try:
         with connect() as conn:
@@ -66,10 +65,42 @@ async def get_user_by_email_for_auth(email: str) -> Optional[UserInDB]:
                 result = cursor.fetchone()
 
                 if result:
-                    print(f"Query result: {result}")  # Debug
                     return UserInDB(password=result[0], email=result[1], name=result[2])
-                print("No user found.")  # Debug
                 return None
     except Exception as e:
         print(f"Error retrieving user: {e}")  # Debug
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def get_all_items_from_db(
+    table: str, email: Optional[str] = None
+) -> List[Dict[str, str]]:
+    """
+    Retrieve all items from the specified table, optionally filtered by email.
+
+    Args:
+        table (str): The name of the table to retrieve data from.
+        email (Optional[str]): The email to filter the results by (if provided).
+
+    Returns:
+        List[Dict[str, str]]: A list of dictionary items representing the records.
+
+    Raises:
+        HTTPException: If an error occurs during database access.
+    """
+    if email:
+        query = f"SELECT * FROM {table} WHERE email_id = %(email)s;"
+        parameters = {"email": email}
+    else:
+        query = f"SELECT * FROM {table};"
+        parameters = {}
+
+    try:
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, parameters)
+                results = cursor.fetchall()
+                columns = [col[0] for col in cursor.description]
+                return [dict(zip(columns, row)) for row in results]
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))

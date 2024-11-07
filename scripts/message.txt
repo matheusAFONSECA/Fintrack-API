@@ -1,5 +1,5 @@
-tests(project): Formating codes
+test(update_revenue): Create update tests
 
-Codes were formated and
-some unecessary functions
-removed.
+eight update tests were created,
+along with the creation of update
+functions for the others.

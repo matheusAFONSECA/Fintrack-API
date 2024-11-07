@@ -1,6 +1,8 @@
 import re
 from fastapi import HTTPException
 from passlib.context import CryptContext
+from fintrack_api.services.CRUD.create import AddItem
+from fintrack_api.services.db import connect
 
 # Initialize the bcrypt context for password hashing and verification
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -62,6 +64,64 @@ def validate_email_format(email: str) -> None:
     """
     pattern = r"^[\w\.-]+@[\w\.-]+\.(com|br)$"
     if not re.match(pattern, email):
-        raise ValueError(
-            "The email must be in the format 'name@domain.com' or 'name@domain.br'."
+        raise HTTPException(
+            status_code=400,
+            detail="The email must be in the format 'name@domain.com' or 'name@domain.br'.",
+        )
+
+
+def email_exists(email):
+    """
+    Check if the email already exists in the database.
+
+    Args:
+        email (str): The email address to check.
+
+    Returns:
+        bool: True if the email exists, False otherwise.
+    """
+    query = """
+        SELECT u.email
+        FROM "user" u
+        WHERE u.email = %(email)s;
+    """
+
+    with connect() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(query, {"email": email})
+            result = cursor.fetchone()
+
+            if result:
+                print(f"Query result: {result}")  # Debug
+                return True
+            print("No user found.")  # Debug
+            return None
+
+
+def validate_infos(item: AddItem):
+    """
+    Validates the information in an AddItem object before processing.
+
+    Args:
+        item (AddItem): An object containing item information to be validated.
+
+    Raises:
+        HTTPException: If any validation fails, an HTTPException is raised with a specific error message.
+    """
+    # Validate the existence of the email
+    if not email_exists(item.email_id):
+        raise HTTPException(
+            status_code=404, detail="This email does not exist in the database."
+        )
+
+    # Validate the value
+    if item.value <= 0:
+        raise HTTPException(
+            status_code=400, detail="The value must be greater than zero."
+        )
+
+    # Validate the date
+    if not item.date:
+        raise HTTPException(
+            status_code=400, detail="The date is required for the alert."
         )
