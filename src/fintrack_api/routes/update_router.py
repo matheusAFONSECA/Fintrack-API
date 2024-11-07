@@ -88,7 +88,7 @@ async def update_alert(email: Optional[str] = Query(None), updated_data: Optiona
         # Update the alert entry
         response = await update_alert_by_email(email, updated_data)
 
-    return {"message": response}
+    return response
 
 
 @update_router.put("/reminder")

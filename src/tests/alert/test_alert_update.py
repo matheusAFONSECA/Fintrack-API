@@ -2,123 +2,153 @@ import pytest
 import requests
 from tests.utils.test_utils import (
     BASE_URL,
+    generate_random_date,
+    add_alert,
     register_user,
     update_alert,
     generate_random_email,
-    generate_random_date,
 )
 
 # -------------------------------------------------------------------------------------------------
 # Tests for the alert update endpoint
 
 
-# Test - Update alert with non-existent email
-def test_update_alert_nonexistent_email():
+def test_alert_update_missing_email():
     """
-    Tests updating an alert with a non-existent email.
+    Test that the API returns a 400 status code if the 'email' parameter is missing
+    when trying to update an alert.
 
-    Expected outcome:
-        The server should return a 422 status code, indicating the email is invalid.
-
-    Assertions:
-        - Status code is 422.
+    Expected:
+        - Status code: 400
+        - JSON response with error detail mentioning the missing 'email' parameter.
     """
-    update_data = {
-        "email_id": "nonexistent@example.com",
-        "type": "Negative Balance",
-        "value": 50.00,
-        "annotation": "Update for non-existent email",
-        "date": generate_random_date(),
+    data = {
+        "type": "Saldo Atualizado",
+        "value": 100.00,
+        "annotation": "Novo limite de alerta de saldo",
     }
-    response = update_alert(update_data)
-    assert response.status_code == 422, f"Expected 422, got {response.status_code}"
+    response = requests.put(f"{BASE_URL}/update/alert", json=data)
+    assert (
+        response.status_code == 400
+    ), f"Expected 400 for missing email parameter, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "The 'email' parameter is required." in json_response["detail"]
 
 
-# Test - Update alert with a negative value
-def test_update_alert_negative_value():
+def test_alert_update_nonexistent_email():
     """
-    Tests updating an alert with a negative value, which is not allowed.
+    Test that the API returns a 404 status code if an attempt is made to update an alert
+    with a non-existent email.
 
-    Setup:
-        - Register a new user to generate a valid email for the test.
-
-    Expected outcome:
-        The server should return a 422 status code, indicating the value is invalid.
-
-    Assertions:
-        - Registration status code is 200.
-        - Update alert status code is 422.
+    Expected:
+        - Status code: 404
+        - JSON response with error detail mentioning that the email was not found.
     """
+    params = {"email": "nonexistent@example.com"}
+    data = {
+        "type": "Saldo Atualizado",
+        "value": 100.00,
+        "annotation": "Novo limite de alerta de saldo",
+    }
+    response = update_alert(params, data)
+    assert (
+        response.status_code == 404
+    ), f"Expected 404 for nonexistent email, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert "Email not found" in json_response["detail"]
+
+
+def test_alert_update_invalid_email_format():
+    """
+    Test that the API returns a 400 status code if an invalid email format is provided
+    when attempting to update an alert.
+
+    Expected:
+        - Status code: 400
+        - JSON response with error detail mentioning the required email format.
+    """
+    params = {"email": "invalidemailformat"}
+    data = {
+        "type": "Saldo Atualizado",
+        "value": 100.00,
+        "annotation": "Novo limite de alerta de saldo",
+    }
+    response = update_alert(params, data)
+    assert (
+        response.status_code == 400
+    ), f"Expected 400 for invalid email format, got {response.status_code}"
+    json_response = response.json()
+    assert "detail" in json_response
+    assert (
+        "The email must be in the format 'name@domain.com' or 'name@domain.br'."
+        in json_response["detail"]
+    )
+
+
+def test_alert_update_success():
+    """
+    Test successful update of an alert after registering a user.
+
+    Steps:
+        1. Register a new user.
+        2. Add an initial alert for that user.
+        3. Update the alert and verify the update was successful.
+
+    Expected:
+        - Status code: 200 for user registration, alert addition, and update.
+        - JSON response with a success message upon alert update.
+    """
+    # Register a user to test update of alert
     email = generate_random_email()
     register_data = {
         "name": "Test User",
         "email": email,
-        "password": "password123",
+        "password": "senha123",
     }
     register_response = register_user(register_data)
     assert (
         register_response.status_code == 200
-    ), "Registration failed for negative value test."
+    ), "User registration failed during alert update test."
 
-    update_data = {
+    date = generate_random_date()
+    add_alert_data = {
         "email_id": email,
-        "type": "Negative Balance",
-        "value": -50.00,  # Negative value
-        "annotation": "Invalid negative value",
-        "date": generate_random_date(),
-    }
-    response = update_alert(update_data)
-    assert response.status_code == 422, f"Expected 422, got {response.status_code}"
-
-
-# Test - Update alert without a date
-def test_update_alert_missing_date():
-    """
-    Tests updating an alert without a date, which is a required field.
-
-    Setup:
-        - Register a new user to generate a valid email for the test.
-
-    Expected outcome:
-        The server should return a 422 status code, indicating the date field is missing.
-
-    Assertions:
-        - Registration status code is 200.
-        - Update alert status code is 422.
-    """
-    email = generate_random_email()
-    register_data = {
-        "name": "Test User",
-        "email": email,
-        "password": "password123",
-    }
-    register_response = register_user(register_data)
-    assert (
-        register_response.status_code == 200
-    ), "Registration failed for missing date test."
-
-    update_data = {
-        "email_id": email,
-        "type": "Negative Balance",
+        "item_type": "Negative Balance",
         "value": 50.00,
-        "annotation": "Alert without a date",
+        "annotation": "Balance below limit",
+        "date": date,
     }
-    response = update_alert(update_data)
-    assert response.status_code == 422, f"Expected 422, got {response.status_code}"
+    add_alert_response = add_alert(add_alert_data)
+    assert (
+        add_alert_response.status_code == 200
+    ), f"Expected 200, got {add_alert_response.status_code}"
+
+    # Update alert
+    update_data = {
+        "type": "Saldo Atualizado",
+        "value": 100.00,
+        "annotation": "Novo limite de alerta de saldo",
+    }
+    params = {"email": email}
+    response = update_alert(params, update_data)
+    assert (
+        response.status_code == 200
+    ), f"Expected 200 for successful alert update, got {response.status_code}"
+    json_response = response.json()
+    assert json_response["message"] == "Alert updated successfully!"
 
 
-# Test - Disallowed methods on the alert update endpoint
-@pytest.mark.parametrize("method", ["get", "post", "delete", "patch"])
-def test_update_alert_disallowed_methods(method):
+@pytest.mark.parametrize("method", ["post", "delete", "get", "patch"])
+def test_alert_update_disallowed_methods(method):
     """
-    Tests disallowed HTTP methods (GET, POST, DELETE, PATCH) on the alert update endpoint.
+    Test that the API returns a 405 status code for HTTP methods that are not allowed
+    for the update alert endpoint.
 
-    Expected outcome:
-        The server should return a 405 status code for each disallowed method.
-
-    Assertions:
-        - Status code is 405.
-        - Response contains a "detail" field indicating "Method Not Allowed".
+    Expected:
+        - Status code: 405 for unsupported methods.
+        - JSON response with error detail mentioning "Method Not Allowed".
     """
     response = getattr(requests, method)(f"{BASE_URL}/update/alert")
     assert (

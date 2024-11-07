@@ -217,18 +217,19 @@ def delete_expenditure(data):
 # ---------------------- Update Functions ----------------------
 
 
-# Helper function to update an alert
-def update_alert(data):
+# Helper function to update an alert entry
+def update_alert(params, data):
     """
-    Updates a specific alert.
+    Updates a specific alert entry.
 
     Args:
-        data (dict): A dictionary with parameters to specify the alert to update.
+        params (dict): A dictionary with parameters to specify the alert entry to update.
+        data (dict): A dictionary containing the updated data for the alert.
 
     Returns:
         Response: The response from the API after updating the alert.
     """
-    return requests.put(f"{BASE_URL}/update/alert", json=data)
+    return requests.put(f"{BASE_URL}/update/alert", params=params, json=data)
 
 
 # Helper function to update a reminder
