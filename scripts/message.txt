@@ -1,5 +1,5 @@
-test(project): testing routes of delete alert
+test(project): routes of delete: expenditure, revenue and reminder
 
-Tests to test the route 
-of delete alert, the code 
-is running properly.
+Tests to test the route of delete expenditure, 
+revenue and reminder done. Code is running
+properly.
