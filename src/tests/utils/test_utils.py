@@ -232,18 +232,19 @@ def update_alert(params, data):
     return requests.put(f"{BASE_URL}/update/alert", params=params, json=data)
 
 
-# Helper function to update a reminder
-def update_reminder(data):
+# Helper function to update a reminder entry
+def update_reminder(params, data):
     """
-    Updates a specific reminder.
+    Updates a specific reminder entry.
 
     Args:
-        data (dict): A dictionary with parameters to specify the reminder to update.
+        params (dict): A dictionary with parameters to specify the reminder entry to update.
+        data (dict): A dictionary containing the updated data for the reminder.
 
     Returns:
         Response: The response from the API after updating the reminder.
     """
-    return requests.put(f"{BASE_URL}/update/reminder", json=data)
+    return requests.put(f"{BASE_URL}/update/reminder", params=params, json=data)
 
 
 # Helper function to update a revenue entry

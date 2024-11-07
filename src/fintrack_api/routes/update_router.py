@@ -24,7 +24,9 @@ async def update_revenue(email: str, updated_data: dict):
 
 
 @update_router.put("/expenditure")
-async def update_expenditure(email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)):
+async def update_expenditure(
+    email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)
+):
     """
     Updates an expenditure entry by email.
 
@@ -58,7 +60,9 @@ async def update_expenditure(email: Optional[str] = Query(None), updated_data: O
 
 
 @update_router.put("/alert")
-async def update_alert(email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)):
+async def update_alert(
+    email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)
+):
     """
     Updates an alert entry by email.
 
@@ -92,6 +96,36 @@ async def update_alert(email: Optional[str] = Query(None), updated_data: Optiona
 
 
 @update_router.put("/reminder")
-async def update_reminder(email: str, updated_data: dict):
-    """Update a reminder entry by email."""
-    return await update_reminder_by_email(email, updated_data)
+async def update_reminder(
+    email: Optional[str] = Query(None), updated_data: Optional[dict] = Body(None)
+):
+    """
+    Updates a reminder entry by email.
+
+    Parameters:
+        email (str): The email associated with the reminder to update.
+        updated_data (dict): A dictionary containing the updated data fields for the reminder.
+
+    Raises:
+        HTTPException: If the email is not provided, has an invalid format, or does not exist in the database.
+
+    Returns:
+        dict: A dictionary with a success message upon successful update.
+    """
+    # Check if the email parameter is provided
+    if email is None:
+        raise HTTPException(status_code=400, detail=EMAIL_REQUIRED)
+
+    # Validate the email format and check if there are matching entries in the database
+    if email:
+        validate_email_format(email)
+
+        # Query the database using the provided email
+        reminders = await get_all_items_from_db("reminder", email)
+        if not reminders:
+            raise HTTPException(status_code=404, detail=EMAIL_NOT_FOUND)
+
+        # Update the reminder entry
+        response = await update_reminder_by_email(email, updated_data)
+
+    return response

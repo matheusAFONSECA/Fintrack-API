@@ -1,4 +1,4 @@
-test(update_expenditure): Create update tests
+test(update_reminder): Create update tests
 
 eight update tests were created,
 along with the creation of update
