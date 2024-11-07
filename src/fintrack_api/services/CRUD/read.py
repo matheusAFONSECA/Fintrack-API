@@ -1,5 +1,5 @@
-from typing import Dict, List, Optional
 from fastapi import HTTPException
+from typing import Dict, List, Optional
 from fintrack_api.services.db import connect
 from fintrack_api.models.userModels import UserOut, UserInDB
 
@@ -57,7 +57,6 @@ async def get_user_by_email_for_auth(email: str) -> Optional[UserInDB]:
         FROM "user" u
         WHERE u.email = %(email)s;
     """
-    print(f"Executing query for email: {email}")  # Debug
 
     try:
         with connect() as conn:
@@ -66,9 +65,7 @@ async def get_user_by_email_for_auth(email: str) -> Optional[UserInDB]:
                 result = cursor.fetchone()
 
                 if result:
-                    print(f"Query result: {result}")  # Debug
                     return UserInDB(password=result[0], email=result[1], name=result[2])
-                print("No user found.")  # Debug
                 return None
     except Exception as e:
         print(f"Error retrieving user: {e}")  # Debug

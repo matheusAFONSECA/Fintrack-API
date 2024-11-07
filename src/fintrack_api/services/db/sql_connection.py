@@ -33,7 +33,7 @@ def connect():
             password=SUPABASE_PASSWORD,
             host=SUPABASE_HOST,
             port=SUPABASE_PORT,
-            database=SUPABASE_DATABASE
+            database=SUPABASE_DATABASE,
         )
         print("Conexão estabelecida com sucesso.")
         return connection

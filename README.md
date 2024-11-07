@@ -1,5 +1,8 @@
 # Fintrack-API
 
+![Build Status](https://github.com/FranciscoPGuimaraes/Fintrack-API/actions/workflows/tests.yml/badge.svg)
+![Python](https://img.shields.io/badge/language-Python-yellow)
+
 ## Overview
 
 **Fintrack-API** is a financial management application designed to help users track their finances effectively. This application is developed as part of the Software Engineering project for **C214**, a course at the National Institute of Telecommunications (**INATEL**). The main goal of this project is to provide a functional API that enables users to manage their financial data, offering operations such as creating, updating, and deleting records.
@@ -156,7 +159,7 @@ This will start the Fintrack-API and allow you to make requests for managing fin
 There are tests to test this API, to run the test it's necessary to run the following command:
 
 ```bash
-pytest src/tests/test_main.py
+pytest --html=report.html --self-contained-html --cov=./ --cov-report=html --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
 ```
 
 > **Remember:** Make sure that the API is running before using the tests.

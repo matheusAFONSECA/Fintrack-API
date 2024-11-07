@@ -1,44 +1,150 @@
-### **Fintrack API - Visão Geral da Documentação**
+# **Fintrack API - Documentação**
 
 ---
 
-### **Modelos (src/fintrack_api/models/userModels.py)**
-Define modelos de dados utilizando Pydantic para estruturar e validar dados relacionados aos usuários.
+```Plaintext
+src/
+├── fintrack_api/
+│   ├── api.py
+│   ├── dependencies.py
+│   ├── main.py
+│   ├── models/
+│   │   ├── TokenModels.py
+│   │   └── userModels.py
+│   ├── services/
+│   │   ├── CRUD/
+│   │   │   ├── create.py
+│   │   │   ├── read.py
+│   │   │   ├── update.py
+│   │   │   └── delete.py
+│   │   └── db/
+│   │       └── sql_connection.py
+│   └── utils/
+│       └── frintrack_api_utils.py
+└── main.py
+```
 
-- **`UserOut`**: Representa os dados de um usuário para saída, incluindo `name` (nome), `email`, `phone` (telefone) e `birth` (data de nascimento).
+---
 
-- **`UserIn`**: Extende o `UserOut` com os campos adicionais `cpf` (identificação do usuário) e `password` (senha) para registro de novos usuários.
+## **Modelos de Dados**
 
-- **`UserInDB`**: Representa os dados do usuário armazenados no banco de dados, incluindo o `hashed_password` (hash da senha) e `user_id` (ID do usuário).
+### Localização: `src/fintrack_api/models`
 
-- **`UserInQuery`**: Permite consultas opcionais de usuários utilizando parâmetros como `name`, `email`, `phone` e `birth`.
+Define modelos de dados usando Pydantic para estruturar e validar dados de tokens e usuários.
+
+- **`Token`** (`TokenModels.py`): 
+  - Modelo de token de acesso com os atributos:
+    - `access_token` (str): Token propriamente dito.
+    - `token_type` (str): Tipo do token, como "bearer".
+
+- **`TokenData`** (`TokenModels.py`): 
+  - Dados do token, contendo:
+    - `user_id` (Union[str, None]): Identificação do usuário, opcional.
+
+- **`UserOut`** (`userModels.py`): 
+  - Dados de usuário para exibição, incluindo:
+    - `name` (str): Nome.
+    - `email` (str): Email.
+
+- **`UserIn`** (`userModels.py`): 
+  - Extende `UserOut` para incluir:
+    - `password` (str): Senha, usada no registro de novos usuários.
+
+- **`UserInDB`** (`userModels.py`): 
+  - Dados do usuário no banco de dados, incluindo:
+    - `name` (str): Nome.
+    - `email` (str): Email.
+    - `password` (str): Senha com hash.
 
 ---
 
-### **Rotas (src/fintrack_api/routes/userRoutes.py)**
-Define os endpoints da API relacionados ao gerenciamento de usuários.
+## **Serviços CRUD**
 
-- **`/login`** (POST): Autentica um usuário e retorna um token JWT em caso de sucesso.
+### Localização: `src/fintrack_api/services/CRUD`
 
-- **`/register`** (POST): Registra um novo usuário com os dados fornecidos, incluindo a senha com hash.
+Define operações CRUD para gerenciar usuários e itens no banco de dados.
 
-- **`/`** (GET): Recupera todos os usuários registrados no sistema.
+- **Create** (`create.py`):
+  - **`create_user`**: Registra um novo usuário.
+  - **`add_item_to_db`**: Insere um item em uma tabela específica (receita, despesa, alerta ou lembrete) usando o modelo `AddItem`.
+
+- **Read** (`read.py`):
+  - **`get_all_users`**: Recupera todos os usuários.
+  - **`get_user_by_email_for_auth`**: Busca usuário por email para autenticação.
+  - **`get_all_items_from_db`**: Recupera todos os itens de uma tabela, opcionalmente filtrados por email.
+
+- **Update** (`update.py`):
+  - Funções para atualizar entradas específicas (receita, despesa, alerta e lembrete) com base no email, usando `update_item`.
+
+- **Delete** (`delete.py`):
+  - Funções para deletar entradas específicas (receita, despesa, alerta e lembrete) com base no email, usando `delete_item`.
+
+---
+
+## **Conexão com Banco de Dados**
+
+### Localização: `src/fintrack_api/services/db/sql_connection.py`
+
+Define a conexão com o banco de dados PostgreSQL usando variáveis de ambiente.
+
+- **`connect`**:
+  - Estabelece uma conexão com o banco de dados, utilizando credenciais e informações do arquivo `.env`.
 
 ---
 
-### **Dependências (src/fintrack_api/dependencies.py)**
-Fornece funções utilitárias e mecanismos de autenticação usando OAuth2 e JWT.
+## **Utilitários**
 
-- **`get_api_key`**: Valida a API key presente nos cabeçalhos da solicitação.
+### Localização: `src/fintrack_api/utils/frintrack_api_utils.py`
 
-- **`verify_password` / `get_password_hash`**: Verifica e gera o hash das senhas dos usuários para armazenamento seguro.
+Funções auxiliares para operações de segurança e validação.
 
-- **`authenticate_user`**: Autentica um usuário com base em seu e-mail e senha.
-
-- **`create_access_token`**: Gera um token de acesso JWT com um período de expiração opcional.
-
-- **`get_current_user`**: Obtém o usuário atual autenticado com base no token JWT fornecido.
-
-- **`get_current_user_id`**: Extrai o ID do usuário do token JWT.
+- **`get_password_hash`**: Gera o hash da senha com bcrypt.
+- **`verify_password`**: Verifica se uma senha corresponde ao hash armazenado.
+- **`validate_password_strength`**: Valida se a senha tem pelo menos 6 caracteres.
+- **`validate_email_format`**: Verifica o formato do email, permitindo domínios `.com` e `.br`.
 
 ---
+
+## **Rotas da API**
+
+### Localização: `src/fintrack_api/api.py`
+
+Define endpoints da API para gerenciamento de usuários e dados financeiros.
+
+### **User Routes**
+
+- **`/login`** (POST): Autentica um usuário e retorna um token JWT.
+- **`/user/register`** (POST): Registra um novo usuário.
+
+### **Add Routes**
+
+- **`/add/revenue`**, **`/add/expenditure`**, **`/add/alert`**, **`/add/reminder`** (POST): 
+  - Adiciona entradas ao banco de dados para receita, despesa, alerta ou lembrete.
+
+### **Visualization Routes**
+
+- **`/visualization/revenue`**, **`/visualization/expenditure`**, **`/visualization/alert`**, **`/visualization/reminder`** (GET): 
+  - Recupera dados com filtro opcional por email.
+
+### **Update Routes**
+
+- **`/update/revenue`**, **`/update/expenditure`**, **`/update/alert`**, **`/update/reminder`** (PUT): 
+  - Atualiza entradas específicas com base no email.
+
+### **Delete Routes**
+
+- **`/delete/revenue`**, **`/delete/expenditure`**, **`/delete/alert`**, **`/delete/reminder`** (DELETE): 
+  - Deleta entradas específicas com base no email.
+
+---
+
+## **Dependências**
+
+### Localização: `src/fintrack_api/dependencies.py`
+
+Fornece funções utilitárias e autenticação com OAuth2 e JWT.
+
+- **`get_api_key`**: Valida a API key nos cabeçalhos da solicitação.
+- **`create_access_token`**: Gera um token JWT com expiração opcional.
+- **`authenticate_user`**: Autentica um usuário com base em email e senha.
+- **`get_current_user`** e **`get_current_user_id`**: Obtêm o usuário autenticado ou seu ID a partir de um token JWT.

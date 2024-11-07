@@ -1,5 +1,6 @@
-from fastapi import HTTPException
+from typing import Optional
 from pydantic import BaseModel
+from fastapi import HTTPException
 from fintrack_api.services.db import connect
 from fintrack_api.models.userModels import UserIn
 
@@ -9,7 +10,7 @@ class AddItem(BaseModel):
     item_type: str
     value: float
     annotation: str
-    date: str
+    date: Optional[str] = None
 
 
 async def create_user(user: UserIn) -> None:
