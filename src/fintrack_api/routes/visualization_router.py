@@ -1,6 +1,5 @@
 from typing import Optional
-from fastapi import HTTPException
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from fintrack_api.services.CRUD.read import get_all_items_from_db
 from fintrack_api.utils.frintrack_api_utils import validate_email_format
 

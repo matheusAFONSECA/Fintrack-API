@@ -63,6 +63,12 @@ def visualize_reminder(data):
 def visualize_expenditure(data):
     return requests.get(f"{BASE_URL}/visualization/expenditure", params=data)
 
+# ---------------------- Funções de exclusão ----------------------
+
+# Função auxiliar para deletar um alerta
+def delete_alert(data):
+    return requests.delete(f"{BASE_URL}/delete/alert", params=data)
+
 
 # ---------------------- Funções auxiliares ----------------------
 

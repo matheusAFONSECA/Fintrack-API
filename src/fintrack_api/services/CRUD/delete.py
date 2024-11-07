@@ -12,11 +12,6 @@ async def delete_expenditure_by_email(email: str) -> dict:
     return await delete_item("expenditure", email)
 
 
-async def delete_alert_by_email(email: str) -> dict:
-    """Delete an alert entry by email."""
-    return await delete_item("alert", email)
-
-
 async def delete_reminder_by_email(email: str) -> dict:
     """Delete a reminder entry by email."""
     return await delete_item("reminder", email)
@@ -38,4 +33,4 @@ async def delete_item(table: str, email: str) -> dict:
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
-    return {"message": f"{table.capitalize()} deleted successfully!"}
+    return f"{table.capitalize()} deleted successfully."

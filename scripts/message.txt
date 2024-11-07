@@ -1,5 +1,5 @@
-test(project): testing routes of visualization reminder and expenditure
+test(project): testing routes of delete alert
 
-Tests to test the route of visualization 
-reminder and expenditure, the code is 
-running properly.
+Tests to test the route 
+of delete alert, the code 
+is running properly.
