@@ -214,6 +214,65 @@ def delete_expenditure(data):
     return requests.delete(f"{BASE_URL}/delete/expenditure", params=data)
 
 
+# ---------------------- Update Functions ----------------------
+
+
+# Helper function to update an alert
+def update_alert(data):
+    """
+    Updates a specific alert.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the alert to update.
+
+    Returns:
+        Response: The response from the API after updating the alert.
+    """
+    return requests.put(f"{BASE_URL}/update/alert", json=data)
+
+
+# Helper function to update a reminder
+def update_reminder(data):
+    """
+    Updates a specific reminder.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the reminder to update.
+
+    Returns:
+        Response: The response from the API after updating the reminder.
+    """
+    return requests.put(f"{BASE_URL}/update/reminder", json=data)
+
+
+# Helper function to update a revenue entry
+def update_revenue(data):
+    """
+    Updates a specific revenue entry.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the revenue entry to update.
+
+    Returns:
+        Response: The response from the API after updating the revenue.
+    """
+    return requests.put(f"{BASE_URL}/update/revenue", json=data)
+
+
+# Helper function to update an expenditure entry
+def update_expenditure(data):
+    """
+    Updates a specific expenditure entry.
+
+    Args:
+        data (dict): A dictionary with parameters to specify the expenditure entry to update.
+
+    Returns:
+        Response: The response from the API after updating the expenditure.
+    """
+    return requests.put(f"{BASE_URL}/update/expenditure", json=data)
+
+
 # ---------------------- Auxiliary Functions ----------------------
 
 

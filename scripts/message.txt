@@ -1,5 +1,5 @@
-feat(project): Documentation code
+test(update_alert): Create update tests
 
-The code was documentated
-to make it more easy to
-understanding.
+Seven update tests were created,
+along with the creation of update
+functions for the others.
