@@ -19,7 +19,9 @@
 
 3. [Running the Application](#running-the-application)
 
-4. [Contributors](#contributors)
+4. [Running Tests](#running-tests)
+
+5. [Contributors](#contributors)
 
 ---
 
