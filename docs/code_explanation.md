@@ -2,7 +2,7 @@
 
 ---
 
-```Plaintext
+```plaintext
 src/
 ├── fintrack_api/
 │   ├── api.py
@@ -11,6 +11,12 @@ src/
 │   ├── models/
 │   │   ├── TokenModels.py
 │   │   └── userModels.py
+│   ├── routes/
+│   │   ├── add_router.py
+│   │   ├── delete_router.py
+│   │   ├── update_router.py
+│   │   ├── user_router.py
+│   │   └── visualization_router.py
 │   ├── services/
 │   │   ├── CRUD/
 │   │   │   ├── create.py
@@ -20,8 +26,10 @@ src/
 │   │   └── db/
 │   │       └── sql_connection.py
 │   └── utils/
-│       └── frintrack_api_utils.py
+│       ├── fintrack_api_utils.py
+│       └── api.py
 └── main.py
+
 ```
 
 ---

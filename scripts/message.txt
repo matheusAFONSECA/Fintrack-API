@@ -1,5 +1,4 @@
-feat(project): adding src in imports
+docs(project): explanation of code
 
-Now imports have the module
-src before statement for 
-the API run in Vercel.
+It was added a explanation
+about the code.

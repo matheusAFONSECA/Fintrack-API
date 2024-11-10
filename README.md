@@ -21,7 +21,11 @@
 
 4. [Running Tests](#running-tests)
 
-5. [Contributors](#contributors)
+5. [Viewing Test Reports](#viewing-test-reports)
+    - [HTML Report](#html-report)
+    - [Log File](#log-file)
+
+6. [Contributors](#contributors)
 
 ---
 
@@ -32,70 +36,93 @@ The project is structured as follows:
 ```mermaid
 graph TD;
     subgraph Fintrack-API
-        
-        subgraph assets
-            B1[style.css]
+
+        C1[requirements.txt]
+        C2[report.html]
+        C3[logfile.log]
+
+        subgraph scripts
+            D1[create_and_activate_venv.sh]
         end
         
         subgraph docs
-            C1[code_explanation.md]
+            B1[code_explanation.md]
         end
 
-        subgraph scripts
-            D1[create_and_activate_venv.ps1]
-            D2[create_and_activate_venv.sh]
-            D3[git_commit.ps1]
-            D4[git_commit.sh]
-            D5[message.txt]
-        end
-        
         subgraph src
+            A1[main.py]
+
+            subgraph tests
+                subgraph alert
+                    T1a[test_alert_add.py]
+                    T1b[test_alert_delete.py]
+                    T1c[test_alert_update.py]
+                    T1d[test_alert_visualization.py]
+                end
+                subgraph expenditure
+                    T2a[test_expenditure_add.py]
+                    T2b[test_expenditure_delete.py]
+                    T2c[test_expenditure_update.py]
+                    T2d[test_expenditure_visualization.py]
+                end
+                subgraph reminder
+                    T3a[test_reminder_add.py]
+                    T3b[test_reminder_delete.py]
+                    T3c[test_reminder_update.py]
+                    T3d[test_reminder_visualization.py]
+                end
+                subgraph revenue
+                    T4a[test_revenue_add.py]
+                    T4b[test_revenue_delete.py]
+                    T4c[test_revenue_update.py]
+                    T4d[test_revenue_visualization.py]
+                end
+                subgraph user
+                    T5a[test_user_add.py]
+                    T5b[test_user_delete.py]
+                    T5c[test_user_update.py]
+                    T5d[test_user_visualization.py]
+                end
+                subgraph utils_tests
+                    T6a[test_utils.py]
+                end
+            end
+
             subgraph fintrack_api
+
+                U2[api.py]
+                U3[dependencies.py]
+
                 subgraph models
-                    E1a1[TokenModels.py]
-                    E1a2[userModels.py]
-                    subgraph structural
-                        E1a3a[TokenModels.py]
-                    end
+                    M1[TokenModels.py]
+                    M2[userModels.py]
                 end
                 
                 subgraph routes
-                    E1b1[userRoutes.py]
+                    R1[add_router.py]
+                    R2[delete_router.py]
+                    R3[update_router.py]
+                    R4[user_router.py]
+                    R5[visualization_router.py]
                 end
                 
                 subgraph services
-                    subgraph user
-                        E1c1a[create.py]
-                        E1c1b[read.py]
-                        E1c1c[update.py]
-                        E1c1d[delete.py]
+                    subgraph CRUD
+                        S1[create.py]
+                        S2[read.py]
+                        S3[update.py]
+                        S4[delete.py]
                     end
                     subgraph db
-                        E1c2a[sql_connection]
+                        S5[sql_connection]
                     end
                 end
 
                 subgraph utils
-                    E2a[fintrack_api_utils.py]
+                    U1[fintrack_api_utils.py]
                 end
-                
-                E1d[api.py]
-                E1e[dependencies.py]
             end
         end
-        
-        subgraph tests
-            subgraph utils_tests
-                F1a[test_utils.py]
-            end
-            F2[test_main.py]
-        end
-
-        G[requirements.txt]
-        H[README.md]
-        I[report.html]
-        J[.env]
-        K[.gitignore]
     end
 ```
 
@@ -144,7 +171,7 @@ You can also create and activate the virtual environment using the provided scri
 
 ---
 
-## Running the Application
+## Running the Application locally
 
 Once the environment is set up, you can start the application by running the following command:
 
@@ -158,13 +185,32 @@ This will start the Fintrack-API and allow you to make requests for managing fin
 
 ## Running Tests
 
-There are tests to test this API, to run the test it's necessary to run the following command:
+The Fintrack API includes a suite of automated tests to ensure the reliability and accuracy of its functionalities. To execute these tests, use the following command in your terminal:
 
 ```bash
 pytest --html=report.html --self-contained-html --cov=./ --cov-report=html --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
 ```
 
-> **Remember:** Make sure that the API is running before using the tests.
+This command performs the following actions:
+
+- **Generates an HTML Report**: Creates a detailed HTML report (`report.html`) of the test results, summarizing the status and outcome of each test case.
+- **Tracks Code Coverage**: Analyzes the code coverage, providing insights into the portions of the codebase that are exercised by the tests. The coverage report can be viewed in an HTML format in the `htmlcov` directory.
+- **Logs Test Execution**: Outputs detailed logs of the test execution, saving them to a file (`logfile.log`) with log levels up to DEBUG for comprehensive traceability and debugging.
+
+---
+
+## Viewing Test Reports
+
+### HTML Report
+To view the comprehensive test report, open the generated [report.html](/report.html) file. On Windows, you can use the following command to launch it directly in your default browser:
+
+```bash
+start report.html
+```
+
+### Log File
+
+For a more detailed log of the test execution, including informational messages and debug-level output, refer to [logfile.log](/logfile.log). This file contains step-by-step logs that can be helpful for debugging and analysis.
 
 ---
 
