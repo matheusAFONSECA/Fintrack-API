@@ -1,4 +1,6 @@
-docs(project): explanation of code
+fix(project): Removing reports of tests
 
-It was added a explanation
-about the code.
+It was notified that the I
+commit the test reports and
+this should not have happened. 
+so It's been removed these files.

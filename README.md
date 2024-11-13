@@ -201,8 +201,10 @@ This command performs the following actions:
 
 ## Viewing Test Reports
 
+After running the command os tests, it will generate these reports: 
+
 ### HTML Report
-To view the comprehensive test report, open the generated [report.html](/report.html) file. On Windows, you can use the following command to launch it directly in your default browser:
+To view the comprehensive test report, open the generated ``report.html`` file. On Windows, you can use the following command to launch it directly in your default browser:
 
 ```bash
 start report.html
@@ -210,7 +212,7 @@ start report.html
 
 ### Log File
 
-For a more detailed log of the test execution, including informational messages and debug-level output, refer to [logfile.log](/logfile.log). This file contains step-by-step logs that can be helpful for debugging and analysis.
+For a more detailed log of the test execution, including informational messages and debug-level output, refer to ``logfile.log``. This file contains step-by-step logs that can be helpful for debugging and analysis.
 
 ---
 
