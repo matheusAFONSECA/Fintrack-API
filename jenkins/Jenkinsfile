@@ -1,9 +1,4 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.11'
-        }
-    }
     stages {
         stage('Checkout') {
             steps {
@@ -24,7 +19,7 @@ pipeline {
             steps {
                 sh '''
                 pytest --html=report.html --self-contained-html --cov=./ --cov-report=html \
-                       --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
+                    --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
                 '''
             }
         }
