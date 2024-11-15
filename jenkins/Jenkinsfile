@@ -1,5 +1,6 @@
-agent { docker 'python:3.11' }
 pipeline {
+    agent { docker 'python:3.11' }  // Agente Docker
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,6 +9,7 @@ pipeline {
                     url: 'https://github.com/FranciscoPGuimaraes/Fintrack-API.git'
             }
         }
+
         stage('Set up Python Environment') {
             steps {
                 sh '''
@@ -16,6 +18,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Run Tests') {
             steps {
                 sh '''
@@ -24,6 +27,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Upload Test Report') {
             steps {
                 archiveArtifacts artifacts: 'report.html', allowEmptyArchive: true
