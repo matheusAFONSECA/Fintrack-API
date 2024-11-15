@@ -1,5 +1,5 @@
 pipeline {
-    agent { docker 'python:3.11' }  // Agente Docker
+    agent any
 
     stages {
         stage('Checkout') {
