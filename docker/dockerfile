@@ -1,0 +1,37 @@
+# Use a imagem base oficial do Jenkins LTS
+FROM jenkins/jenkins:lts
+
+# Modo root para instalação de dependências
+USER root
+
+# Atualizar o sistema e instalar dependências para Docker, Python e outras ferramentas
+RUN apt-get update && apt-get install -y \
+    docker.io \
+    python3 \
+    python3-pip \
+    git \
+    curl \
+    unzip \
+    && apt-get clean
+
+# Instalar o Python 3.11 (se você precisar de uma versão específica)
+RUN apt-get update && apt-get install -y python3.11 python3.11-distutils
+
+# Atualizar o pip para a versão mais recente
+RUN python3.11 -m pip install --upgrade pip
+
+# Adicionar um diretório para o Jenkins Configuration as Code (JCasC)
+RUN mkdir -p /var/jenkins_home/casc_configs
+
+# Configuração padrão de credenciais via arquivo YAML (exemplo de token do GitHub)
+COPY casc.yaml /var/jenkins_home/casc_configs/
+
+# Configurar o Jenkins para usar o arquivo de configuração YAML
+ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs
+
+# Voltar para o usuário Jenkins para garantir que o Jenkins rode com permissões mais seguras
+USER jenkins
+
+# Porta do Jenkins
+EXPOSE 8080
+EXPOSE 50000
