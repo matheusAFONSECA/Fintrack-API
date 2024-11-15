@@ -1,0 +1,11 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              scope: GLOBAL
+              id: "github-token"
+              description: "GitHub Personal Access Token"
+              secret: "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"
+jenkins:
+  systemMessage: "Jenkins configurado automaticamente!"
