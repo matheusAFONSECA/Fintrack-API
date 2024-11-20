@@ -24,6 +24,24 @@ pipeline {
             }
         }
 
+         stage('Build with PyInstaller') {
+            steps {
+                script {
+
+                    sh '''#!/bin/bash
+                    . venv/bin/activate  # Ativar o ambiente virtual
+                    pyinstaller --onefile --clean src/main.py
+                    '''
+                }
+            }
+        }
+
+        stage('Archive Executable') {
+            steps {
+                archiveArtifacts artifacts: 'dist/main', allowEmptyArchive: true
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 sh '''#!/bin/bash
