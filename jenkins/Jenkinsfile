@@ -17,6 +17,7 @@ pipeline {
                     sh '''#!/bin/bash
                     python3 -m venv venv
                     source venv/bin/activate
+                    echo "Python executável: $(which python)"
                     python -m pip install --upgrade pip
                     pip install -r requirements.txt
                     '''
@@ -27,7 +28,6 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                source venv/bin/activate
                 pytest --html=report.html --self-contained-html --cov=./ --cov-report=html \
                     --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
                 '''
