@@ -16,7 +16,7 @@ pipeline {
                     // Criando e ativando o ambiente virtual
                     sh '''#!/bin/bash
                     python3 -m venv venv
-                    source venv/bin/activate
+                    . venv/bin/activate
                     echo "Python executável: $(which python)"
                     python -m pip install --upgrade pip
                     pip install -r requirements.txt
