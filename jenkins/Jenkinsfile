@@ -28,8 +28,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                pytest --html=report.html --self-contained-html --cov=./ --cov-report=html \
-                    --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
+                pytest --html=/var/jenkins_home/workspace/fintrack-pipeline/report.html --self-contained-html --cov=./ --cov-report=html --log-cli-level=INFO --log-file=logfile.log --log-file-level=DEBUG
                 '''
             }
         }
