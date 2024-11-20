@@ -18,6 +18,7 @@ pipeline {
                     python3 -m venv venv
                     source venv/bin/activate
                     python -m pip install --upgrade pip
+                    pip show pytest pytest-cov pytest-htm
                     pip install -r requirements.txt
                     '''
                 }
