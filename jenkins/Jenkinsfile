@@ -17,7 +17,7 @@ pipeline {
                     sh '''#!/bin/bash
                     python3 -m venv venv
                     . venv/bin/activate
-                    echo "Python executável: $(which python)"
+                    ls -l
                     python -m pip install --upgrade pip
                     pip install -r requirements.txt
                     '''
