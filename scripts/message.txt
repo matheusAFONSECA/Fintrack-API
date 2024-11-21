@@ -1,6 +1,8 @@
-fix(project): Removing reports of tests
+feat(docker-compose): add Jenkins, Neo4j, and Redis containers  
 
-It was notified that the I
-commit the test reports and
-this should not have happened. 
-so It's been removed these files.
+Added a `docker-compose` configuration with three
+containers: Jenkins, built using a custom Dockerfile;
+Neo4j, a graph database; and Redis, a caching and
+messaging in-memory store. Successfully configured
+and launched all three containers, including build
+and deployment steps.
