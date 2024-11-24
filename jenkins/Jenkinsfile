@@ -60,7 +60,7 @@ pipeline {
     post {
         success {
             withCredentials([string(credentialsId: 'email-cred', variable: 'EMAIL')]) {
-                emailext subject: 'Pipeline executado com sucesso!',
+                emailext subject: 'Pipeline executado!',
                          body: 'Pipeline executado com sucesso!',
                          to: "${EMAIL}"
             }
