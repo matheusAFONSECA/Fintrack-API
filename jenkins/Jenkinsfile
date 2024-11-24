@@ -57,19 +57,25 @@ pipeline {
             }
         }
     }
+
     post {
         success {
-            withCredentials([string(credentialsId: 'email-cred', variable: 'EMAIL')]) {
-                emailext subject: 'Pipeline executado!',
-                         body: 'Pipeline executado com sucesso!',
-                         to: "${EMAIL}"
+            script {
+                emailext(
+                    to: "francisco.pereira@ges.inatel.br",
+                    subject: "O pipeline foi executado",
+                    body: "O pipeline foi executado com sucesso!"
+                )
             }
         }
+
         failure {
-            withCredentials([string(credentialsId: 'email-cred', variable: 'EMAIL')]) {
-                emailext subject: 'Falha na execução do Pipeline!',
-                         body: 'Houve uma falha durante a execução do Pipeline. Verifique os logs no Jenkins.',
-                         to: "${EMAIL}"
+            script {
+                emailext(
+                    to: "francisco.pereira@ges.inatel.br",
+                    subject: "O pipeline foi executado",
+                    body: "O pipeline falhou. Verifique os logs!"
+                )
             }
         }
     }
