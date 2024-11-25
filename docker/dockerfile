@@ -1,0 +1,46 @@
+# Use a imagem base oficial do Jenkins LTS
+FROM jenkins/jenkins:lts
+
+# Modo root para instalação de dependências
+USER root
+
+# Atualizar o sistema e instalar dependências para Docker, Python e outras ferramentas
+RUN apt-get update && apt-get install -y \
+    docker.io \
+    python3 \
+    python3-pip \
+    python3.11 \
+    python3.11-distutils \
+    python3.11-venv \
+    git \
+    curl \
+    unzip \
+    && apt-get clean
+
+# Criar e ativar um ambiente virtual para o Python
+RUN python3.11 -m venv /opt/venv
+
+# Ativar o ambiente virtual e atualizar o pip dentro do ambiente
+RUN /opt/venv/bin/pip install --upgrade pip
+
+# Instalar pacotes necessários (pytest, coverage)
+RUN /opt/venv/bin/pip install pytest coverage
+
+# Definir as variáveis de ambiente para utilizar o Python no ambiente virtual
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Adicionar um diretório para o Jenkins Configuration as Code (JCasC)
+RUN mkdir -p /var/jenkins_home/casc_configs
+
+# Configuração padrão de credenciais via arquivo YAML (exemplo de token do GitHub)
+COPY casc.yaml /var/jenkins_home/casc_configs/
+
+# Configurar o Jenkins para usar o arquivo de configuração YAML
+ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs
+
+# Voltar para o usuário Jenkins para garantir que o Jenkins rode com permissões mais seguras
+USER jenkins
+
+# Porta do Jenkins
+EXPOSE 8080
+EXPOSE 50000
